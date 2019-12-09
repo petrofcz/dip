@@ -230,8 +230,50 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				\caption[Architektura řešení]{Architektura řešení}\label{fig:Architecture}
 			\end{figure}
 \clearpage
+	\section{Analýza kompatibility}
+		Na počátku byla provedena analýza kompatibility jednotlivých komponent. 
+		
+		\subsection{Kontroler}
+		Při analýze kompatibility kontroleru za použití modelu Novation SLMkII 49 bylo zjištěno, že
+		kontroler připojený přes USB sice exportuje rozhraní pro komunikaci přes protokol Automap,
+		ale toto rozhraní nehlásí systému příslušnou třídu USB zařízení. Podle zachycené sériové komunikace
+		se ukázalo, že formát přenášených dat odpovídá třídě USB pro MIDI zařízení\cite{usbmidi}.
+		
+		\subsection{VST host}
+		Jako hostitelská aplikace pro VST pluginy byl testován program Bidule of společnosti Plogue.
+		Z anlýzy vyplynulo, že poskytuje bohaté možnosti ovládání přes kombinaci protokolů OSC a UDP.
+		Program přes OSC umožňuje spouštět důležité akce, lze navíc přijímat a odesílat hodnoty všech VST pluginů a interních modulů.
+		Data jsou uložena ve formátu XML, ze kterého lze snadno získat veškeré informace o uloženém projektu.
+		
 	\section{Zvolené technologie}
+		Na základě analýzy kompatibility byl jako hardwarový kontroler zvolen model Novation SLMkII 49, jako VST hostitelskou aplikací byl zvolen program Bidule od společnosti Plogue.
+		Pro zajištění nízkoúrovňové komunikace s kontrolerem byl zvolen univerzální USB ovladač WinUSB pro platformu Windows.
+	
+		Při výběru technologií pro implementaci vlastní aplikace byly zohledněny následující požadavky:
+		\begin{itemize}
+			\item Možnost low-level komunikace přes USB
+			\item Podpora komunikace přes UDP
+			\item Podpora asynchronního kódu na vysoké úrovni
+			\item Nenáročná tvorba UI
+			\item Stabilita a rychlost odezvy
+		\end{itemize}
+			
+		Pro implementaci vlastní aplikace byl zvolen programovací jazyk TypeScript, jehož kód je kompilován do jazyka JavaScript.
 
+		Dále byl zvolen framework Electron, který poskytuje možnost tvorby desktopových aplikací za použití jazyka JavaScript.
+		Při spuštění aplikace vytvořené ve frameworku Electron je spuštěn na pozadí tzv. hlavní proces.
+		Hlavní proces vytváří další vedlejší nezávislé procesy, které slouží k zobrazení oken s webovým prohlížečem, kde je načtena klientská část aplikace.
+		Ke komunikaci mezi hlavním a vedlejšími procesy framework poskytuje jednoduché rozhraní.
+
+		Původním záměrem bylo využít hlavní proces pouze jako proxy pro protokoly OSC a Automap mezi příslušnými komponentami a klientskou částí aplikace.
+		Při testování bylo zjištěno, že rozhraní pro komunikaci mezi hlavním a vedlejšími vlákny není pro tento účel dostatečně rychlé a nemá dostatečně rychlou odezvu.
+		Jako řešení tohoto problému bylo zvoleno rozdělení aplikace na serverovou a klientskou část, kde mezi oběmi stranami nebude docházet k objemné komunikaci citlivé na dobu odezvy.
+		Jelikož lze předpokládat, že velká část stavu aplikace bude sdílená serverovou i klientskou částí, byl vybrán pro obě části framework pro vývoj webových aplikací Angular a knihovna NGXS, která
+		představuje framework pro řízení stavu podle patternu CQRS\cite{cqrs}, který vychází ze vzoru CQS\cite{cqs}. Výhodou je pak možnost automatické synchronizace stavu mezi serverovou a klientskou částí.
+
+		Pro servrovou část byla využita knihovna \texttt{tessel/node-usb}, jejíž úlohou je zpřístupnění funkcí knihovny \texttt{libusb}\cite{libusb}, která poskytuje možnost low-level komunikace s USB zařízeními.
+		Též byla využita knihovna \texttt{node-osc}, která umožňuje komunikaci přes OSC a UDP protokol.
+		
 \chapter{Implementace vlastního řešení}
 
 \chapter{Testování}
@@ -255,6 +297,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	\item[OSC] Open sound control
 	\item[ASIO] Audio streaming input output
 	\item[XML] Extensible markup language
+	\item[CQRS] Command Query Responsibility Segregation
+	\item[CQS] Command Query Separation
 \end{description}
 
 
