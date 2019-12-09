@@ -137,7 +137,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				\caption[Bitwig Studio]{Ukázka prostředí Bitwig Studio}\label{fig:DAW}
 			\end{figure}
 			
-		\clearpage
+\clearpage
 		\subsection{Prostředí pro živá vystoupení}
 			S příchodem výkonných mobilních zařízení se začaly objevovat prostředí pro živá vystoupení.
 			Poněvadž jde o novou oblast a uživatelská základna není příliš početná, každé řešení přichází
@@ -181,7 +181,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 \chapter{Návrh vlastního řešení}
 	\section{Architektura}
 		Jelikož by bylo zbytečné realizovat celé řešení vlastní implementací, bylo použito vzájemné propojení více technologií tak,
-		aby vlastní implementace řešila pouze problémy související s dosažením kýženého chování systému. V následujících kapitolách
+		aby vlastní implementace řešila pouze problémy související s dosažením kýženého chování systému. V následujících podkapitolách
 		budou rozebrány jednotlivé části architektury.
 		
 		\subsection{VST host}
@@ -205,15 +205,32 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{OSC}		
 			OSC\cite{osc} představuje obecný a jednoduchý protokol určený pro přenos zpráv mezi multimediálními zařízeními a aplikacemi.
 			Zprávy jsou přenášeny typicky přes UDP protokol. Multimediální aplikace často poskytují možnost oboustranné integrace
-			se službami třetích stran přes OSC protokol.
+			se službami třetích stran právě přes OSC protokol.
+
+		\subsection{HW Kontroler}
+			Hardwarový kontroler slouží k ovládání multimediálních aplikací nebo zařízení. V naprosté většině k přenosu používá MIDI protokol
+			a bývá připojen přes rozhraní USB nebo MIDI. Kontroler navíc může být vybaven prezentačními prvky, jako jsou LED indikátory, display apod.
 
 		\subsection{Automap}
+			Protokol Automap od společnosti Novation je postavený nad protokolem MIDI, využívá kombinaci MIDI zpráv typu CC a SysEx \cite{automap}.
+			Slouží k integraci multimediálních aplikací se skupinou kontrolerů od skupiny Novation. Existují implementace pro 
+			přední DAW prostředí.
 
 		\subsection{Vlastní aplikace}
-		
+			Cílem vlastní aplikace je propojení všech komponent tak, aby bylo dosaženo požadované funkcionality.
+			Aplikace bude ovládat VST hostitelské prostředí a v něm obsažené nástroje a efekty s využitím OSC protokolu.
+			S hardwarovým kontrolerem bude aplikace obousměrně integrována přes protokol Automap.
+			K dispozici bude též desktop UI sloužící ke konfiguraci zvuků, presetů a dalších nastavení.
+\clearpage
 		\subsection{Závěr}
-		
-	\section{Architektura}
+			Na následujícím diagramu je zobrazena architektura systému\ref{fig:Architecture}.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=1\textwidth]{Architecture}
+				\caption[Architektura řešení]{Architektura řešení}\label{fig:Architecture}
+			\end{figure}
+\clearpage
+	\section{Zvolené technologie}
 
 \chapter{Implementace vlastního řešení}
 
