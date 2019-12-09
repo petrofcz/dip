@@ -56,10 +56,6 @@
 % \newacronym{FIT}{FIT}{Fakulta informa{\v c}n{\' i}ch technologi{\' i}}
 
 \begin{introduction}
-	%sem napište úvod Vaší práce
-\end{introduction}
-
-\chapter{Cíl práce}
 V hudební branži se můžeme setkat s rozličnými hudebními nástroji. V posledních desetiletích
 zaujaly významné místo na trhu elektronické hudební nástroje. Zároveň se s příchodem dostupných a výkonných
 výpočetních jednotek začaly objevovat virtuální hudební nástroje\cite{kogan2008brief}.
@@ -70,6 +66,8 @@ Dříve byly hlavní doménou virtuálních nástrojů prostředí pro studiovou
 V dnešní době, kdy mobilní zařízení dokáží poskytnout dostatečný výkon, stoupá zájem o využití softwarových hudebních nástrojů
 při živých vystoupeních. Cílem práce je navrhnout takové řešení, které by umělci poskytovalo dostatečné možnosti a komfort 
 pro efektivní využití virtuálních hudebních nástrojů na pódiu.
+	%sem napište úvod Vaší práce
+\end{introduction}
 
 \chapter{Analýza}
 	\section{Požadavky}
@@ -207,7 +205,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Zprávy jsou přenášeny typicky přes UDP protokol. Multimediální aplikace často poskytují možnost oboustranné integrace
 			se službami třetích stran právě přes OSC protokol.
 
-		\subsection{HW Kontroler}
+		\subsection{HW kontroler}
 			Hardwarový kontroler slouží k ovládání multimediálních aplikací nebo zařízení. V naprosté většině k přenosu používá MIDI protokol
 			a bývá připojen přes rozhraní USB nebo MIDI. Kontroler navíc může být vybaven prezentačními prvky, jako jsou LED indikátory, display apod.
 
@@ -233,7 +231,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	\section{Analýza kompatibility}
 		Na počátku byla provedena analýza kompatibility jednotlivých komponent. 
 		
-		\subsection{Kontroler}
+		\subsection{HW kontroler}
 		Při analýze kompatibility kontroleru za použití modelu Novation SLMkII 49 bylo zjištěno, že
 		kontroler připojený přes USB sice exportuje rozhraní pro komunikaci přes protokol Automap,
 		ale toto rozhraní nehlásí systému příslušnou třídu USB zařízení. Podle zachycené sériové komunikace
@@ -270,11 +268,108 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Jako řešení tohoto problému bylo zvoleno rozdělení aplikace na serverovou a klientskou část, kde mezi oběmi stranami nebude docházet k objemné komunikaci citlivé na dobu odezvy.
 		Jelikož lze předpokládat, že velká část stavu aplikace bude sdílená serverovou i klientskou částí, byl vybrán pro obě části framework pro vývoj webových aplikací Angular a knihovna NGXS, která
 		představuje framework pro řízení stavu podle patternu CQRS\cite{cqrs}, který vychází ze vzoru CQS\cite{cqs}. Výhodou je pak možnost automatické synchronizace stavu mezi serverovou a klientskou částí.
+		
+		Pro klientskou část byla použita knihovna \texttt{Angular Material UI}, která poskytuje základní prvky pro tvorbu uživatelského rozhraní.
 
 		Pro servrovou část byla využita knihovna \texttt{tessel/node-usb}, jejíž úlohou je zpřístupnění funkcí knihovny \texttt{libusb}\cite{libusb}, která poskytuje možnost low-level komunikace s USB zařízeními.
-		Též byla využita knihovna \texttt{node-osc}, která umožňuje komunikaci přes OSC a UDP protokol.
+		V serverové části též byla využita knihovna \texttt{node-osc}, která umožňuje komunikaci přes OSC a UDP protokol.
+		
+	\section{Funkční požadavky}
+		Při návrhu řešení byly určeny následující funkční požadavky.
+	
+		V aplikaci bude možné používat více projektů programu Bidule. Bude k dispozici rozhraní pro správu projektů, kde bude možné
+		zadat cestu k uloženému projektu a název projektu. Je možné načíst a zavřít projekt. Veškerá nastavení kromě globálních se budou ukládat 
+		pro každý projekt zvlášť. Po načtení projektu dojde k automatickému importu konfigurace projektu Bidule.
+		
+		Vrstvou se rozumí skupina VST pluginů definovaná v projektu programu Bidule. Manuálem se rozumí skupina vrstev a představuje připojenou klaviaturu.
+
+		V rámci aplikace bude možné zobrazit seznam dostupných nástrojů a efektů. Seznam nástrojů a efektů bude importován z konfigurace projektu Bidule.
+		U nástrojů a efektů bude možné vytvořit snímek všech parametrů pluginu, který bude považován za výchozí a bude načten při spuštení aplikace, nebo po přepnutí zvuku. V rámci seznamů bude též možné otevřít uživatelské rozhraní VST pluginu, či zobrazit dostupnost v jednotlivých vrstvách. Pro nástroje bude možnost definovat více pojmenovaných stránek mapování, pro efekt bude možné zadat právě jednu stránku mapování s volbou hlavního mapování.
+
+		Editor stránek mapování bude poskytovat možnost konfigurace mapování parametrů VST pluginu na enkodery kontroleru.
+		V rámci jedné stánky mapování bude možné ke každému enkoderu přiřadit právě jeden parametr VST pluginu a zadat tak až 8 různých mapování.
+		Při volbě vztažného parametru pluginu bude možné použít tzv. funkce learn, kdy lze ovládaný parametr vybrat přímo v prostředí pluginu.
+		Bude možné zadat název mapování.
+		Pro každé mapování budou k dispozici následující strategie:
+		\begin{itemize}
+			\item\label{LinearMappingStrategy} \textbf{Lineární} - Tato strategie bude umožňovat určit lineární vztah mezi hodnotou enkoderu na hardwarovém kontroleru 
+			a hodnotou parametru příslušného pluginu. Bude možné zadat rozsah zobrazovaných hodnot, rozsah hodnot parametru VST pluginu, invertovat
+			průběh a zadat suffix pro zobrazení na displayi. Rozsah hodnot parametrů pluginu bude možné nastavovat i přes tzv. learn metodu, která 
+			umožňuje hodnoty zvolit přímo v prostředí VST pluginu. Na otočných enkodérech kontroleru bude stav lineárně indikován pro celý rozsah enkodéru.
+			
+			\item \textbf{Lineární s položkovým zobrazením} - Jedná se o rozšíření Lineární strategie rožšířené o možnost zadání položek, které
+			budou zobrazeny na displayi v závislosti na hodnotě parametru pluginu. Každá položka bude určena názvem a hraniční hodnotou parametru VST pluginu.
+			Položky bude možné přidávat i za pomoci tzv. learn metody, kdy je možné zadat hraniční hodnotu přímo v prostředí VST pluginu.
+
+			\item \textbf{Seznam} - Za použití této strategie bude možné definovat seznam položek obsahující název a hodnotu parametru VST pluginu.
+			Oproti lineární strategii s položkovým zobrazením bude probíhat změna parametru VST pluginu skokově. Při reflektování změn parametru bude zobrazena
+			položka, která je hodnotou aktuální hodnotě parametru nejblíže.
+		\end{itemize}
+		
+		V editoru presetů bude možné zadat až 8 kategorií zvuků, které bude možné řadit a přejmenovat.
+		Pro každou kategorii bude možné přidat nový preset, či duplikovat stávající. Preset určuje použitý VST plugin,
+		strategii inicializace pluginu vč. konfigurace, rozdílovou sadu hodnot parametrů pluginu a rozdílovou sadu hodnot parametrů efektů vrstvy.
+		Rozdílová sada bude pro danou vrstvu vytvářena při změně v parametrech pluginu v době, kdy je plugin aktivní. Zaznamenanou sadu bude
+		možné pro aktivní preset uložit.
+		V rámci inicializace VST pluginu budou k dispozici následující strategie:
+		\begin{itemize}
+			\item \textbf{Snímek všech parametrů} - V této strategii bude možné pořídit snímek hodnot všech parametrů VST pluginu, který bude načten
+			při načtení presetu.
+			\item Zpráva typu Program Change - Tato strategie zajistí odeslání MIDI zprávy typu Program Change do patřičného VST pluginu.
+			\item Načtení nativního VST presetu - Za použití této strategie dojde k načtení nativního presetu VST pluginu. Nativní presety je možné editovat
+			v hostitelské aplikaci či přímo v pluginu.
+		\end{itemize}
+		Pro každou vrstvu bude možný být aktivní právě jeden preset. Po jeho načtení bude aplikovaná uložená inicizalizační strategie.
+		Vlastnosti presetu bude možné upravit, či preset odstranit.
+		
+		Za použití kontroleru bude možný výběr kategorie a stránkovaný výběr presetu v rámci dané kategorie. Zároveň bude k dispozici
+		historie posledních použitých presetů vč. svých stavů pro každou vrstvu.
+		Hodnoty parametrů pluginů bude možné ovládat otočnými enkodéry kontroleru. Hodnoty budou indikovány LED prstencem enkodéru a grafickým výstupem na displayi.
+		V rámci ovládání parametrů nástrojů bude k dispozici
+		zobrazení stránky mapování daného presetu. Pro ovládání parametrů efektů bude k dispozici agregované zobrazení, kde bude zobrazena
+		hlavní položka stránky mapování pro každý efekt, který je v dané vrstvě dostupný. Bude možné ovládat i všechny parametry efektu.
+		Kontroler umožní přepínat právě ovládanou vrstvu. Za pomocí posuvných prvků kontroleru bude možné ovládat hlasitosti jednotlivých vrstev.
+		K dispozici bude též ovládání hlavní hlasitosti a tzv. funkce PANIC pro ukonćení všech znějících tónů.
+	
+	\section{Doménový model}
+
+	\section{Desktopové uživatelské rozhraní}
+
+	\section{Uživatelské rozhraní kontroleru}
+		
 		
 \chapter{Implementace vlastního řešení}
+	\section{USB}
+
+		- Implementace midi přes USB
+
+	\section{NGXS}
+		
+		- Synchronizace
+		
+		- Stavy
+		
+	\section{OSC}
+	
+		- asynchronni zpracovani
+		- komunikace s Bidule
+	
+	\section{Kontroler}
+	
+		- abstrakce
+		- asynchronni
+		- model pro tlacitka
+		- model pro display
+		- model pro dalsi prvky
+	
+	\section{Desktop UI}
+		- angular material
+		
+	\section{Data}
+
+		- import dat z bidule
+		- ukladani dat
+
 
 \chapter{Testování}
 
