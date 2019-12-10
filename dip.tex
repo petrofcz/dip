@@ -16,6 +16,7 @@
 \usepackage{float}
 \usepackage{subfig}
 \usepackage{enumitem}
+\usepackage{rotating}
 
 \usepackage{newfloat}
 \DeclareFloatingEnvironment[placement={!ht},name=Seznam]{mylist}
@@ -211,7 +212,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 
 		\subsection{HW kontroler}
 			Hardwarový kontroler slouží k ovládání multimediálních aplikací nebo zařízení. V naprosté většině případů k přenosu používá MIDI protokol
-			a bývá připojen přes rozhraní USB nebo MIDI. Kontroler navíc může být vybaven prezentačními prvky, jako jsou LED indikátory, display apod.
+			a bývá připojen přes rozhraní USB nebo MIDI. Kontroler navíc může být vybaven prezentačními prvky, jako jsou LED indikátory, displej apod.
 
 		\subsection{Automap}
 			Protokol Automap od společnosti Novation je postavený nad protokolem MIDI, využívá kombinaci zpráv typu CC a SysEx \cite{midi}\cite{automap}.
@@ -277,19 +278,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 
 
 		\begin{figure}
-			\centering
-%			\parbox{5cm}{
-%				\includegraphics[width=5.5cm]{Dip-AppArchitecture1}
-%				\caption{Původní návrh architektury aplikace.}
-%				\label{fig:AppArchitectureA}}
-%			\qquad
-%			\begin{minipage}{5cm}
-%				\includegraphics[width=5cm]{Dip-AppArchitecture2}
-%				\caption{Optimalizovaný návrh architektury.}
-%				\label{fig:AppArchitectureB}
-%			\end{minipage}
-			
-			\subfloat[Původní návrh]{{\includegraphics[width=5.8cm]{Dip-AppArchitecture1}								\label{fig:AppArchitectureA} }}
+			\centering		
+			\subfloat[Původní návrh]{{\includegraphics[width=5.8cm]{Dip-AppArchitecture1}												\label{fig:AppArchitectureA} }}
 			\qquad
 			\subfloat[Optimalizovaný návrh]{{\includegraphics[width=5.8cm]{Dip-AppArchitecture2}
 				\label{fig:AppArchitectureB} }}
@@ -321,12 +311,12 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Pro každé mapování budou k dispozici následující strategie:
 		\begin{itemize}
 			\item\label{LinearMappingStrategy} \textbf{Lineární} - Tato strategie bude umožňovat určit lineární vztah mezi hodnotou enkodéru na hardwarovém kontroleru 
-			a hodnotou parametru příslušného pluginu. Bude možné zadat rozsah hodnot zobrazených na displayi, rozsah hodnot parametru VST pluginu, invertovat
-			průběh a zadat suffix pro zobrazení na displayi. Rozsah hodnot parametrů pluginu bude možné nastavovat i přes tzv. learn metodu, která 
+			a hodnotou parametru příslušného pluginu. Bude možné zadat rozsah hodnot zobrazených na displeji, rozsah hodnot parametru VST pluginu, invertovat
+			průběh a zadat suffix pro zobrazení na displeji. Rozsah hodnot parametrů pluginu bude možné nastavovat i přes tzv. learn metodu, která 
 			umožňuje hodnoty zvolit přímo v prostředí VST pluginu. Na LED prstencích otočných enkodérů kontroleru bude hodnota parametru indikována lineárně na celém rozsahu enkodéru.
 			
 			\item \textbf{Lineární s položkovým zobrazením} - Jedná se o rozšíření Lineární strategie rožšířené o možnost zadání položek, které
-			budou zobrazeny na displayi v závislosti na hodnotě parametru pluginu. Každá položka bude určena názvem a hraniční hodnotou parametru VST pluginu.
+			budou zobrazeny na displeji v závislosti na hodnotě parametru pluginu. Každá položka bude určena názvem a hraniční hodnotou parametru VST pluginu.
 			Položky bude možné přidávat i za pomoci tzv. learn metody, kdy je možné zadat hraniční hodnotu přímo v prostředí VST pluginu.
 
 			\item \textbf{Seznam} - Za použití této strategie bude možné definovat seznam položek obsahujících název a hodnotu parametru VST pluginu.
@@ -341,8 +331,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		V rámci inicializace VST pluginu budou k dispozici následující strategie:
 		\begin{itemize}
 			\item \textbf{Snímek všech parametrů} - V této strategii bude možné pořídit snímek hodnot všech parametrů VST pluginu. Snímek bude načten při načtení presetu.
-			\item Zpráva typu Program Change - Tato strategie zajistí odeslání MIDI zprávy typu Program Change do patřičného VST pluginu.
-			\item Načtení nativního VST presetu - Za použití této strategie dojde k načtení nativního presetu VST pluginu. Nativní presety je možné editovat
+			\item \textbf{Zpráva typu Program Change} - Tato strategie zajistí odeslání MIDI zprávy typu Program Change do patřičného VST pluginu.
+			\item \textbf{Načtení nativního VST presetu} - Za použití této strategie dojde k načtení nativního presetu VST pluginu. Nativní presety je možné editovat
 			v hostitelské aplikaci či přímo v pluginu.
 		\end{itemize}
 		Pro každou vrstvu může být aktivní právě jeden preset. Po načtení presetu bude 
@@ -351,7 +341,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	
 		Za použití kontroleru bude možný výběr kategorie a stránkovaný výběr presetu v rámci dané kategorie. Zároveň bude k dispozici
 		historie posledních použitých presetů vč. jejich stavů pro každou vrstvu.
-		Hodnoty parametrů pluginů bude možné ovládat otočnými enkodéry kontroleru. Hodnoty budou indikovány LED prstencem enkodéru a grafickým výstupem na displayi podle konfigurace strategie mapování.
+		Hodnoty parametrů pluginů bude možné ovládat otočnými enkodéry kontroleru. Hodnoty budou indikovány LED prstencem enkodéru a grafickým výstupem na displeji podle konfigurace strategie mapování.
 		V rámci ovládání parametrů nástrojů bude k dispozici
 		zobrazení stránky mapování daného presetu. Pro ovládání parametrů efektů bude k dispozici agregované zobrazení, kde bude zobrazena
 		hlavní položka stránky mapování pro každý efekt, který je v dané vrstvě dostupný. Bude možné ovládat i všechny parametry efektu.
@@ -360,7 +350,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		K dispozici bude též ovládání hlavní hlasitosti a tzv. funkce Panic pro ukonćení všech znějících tónů.
 	
 	\section{Doménový model}
-		Z analýzy požadavků byl navržen doménový model (\ref{obr. fig:DomainModel}),
+		Z analýzy požadavků byl navržen doménový model (obr. \ref{fig:DomainModel}),
 		který modeluje entity problémové domény a jejich vzájemné vztahy.
 		\begin{figure}
 			\centering
@@ -369,18 +359,97 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\end{figure}		
 
 	\section{Desktopové uživatelské rozhraní}
-		Při návrhu uživatelského rozhraní desktopové aplikace
-		byl sestrojen následující seznam obrazovek.
+		Při návrhu uživatelského rozhraní desktopové aplikace byl sestrojen následující seznam obrazovek.
 		\begin{mylist}
-			\begin{enumerate}[label=\textbf{S\arabic*}]
+			\begin{enumerate}[label=\textbf{D\arabic*.}]
 				\item Seznam projektů
 				\item Editace projektu
+				\item Seznam nástrojů
+				\item Zobrazení dostupnosti nástroje (obr. \ref{fig:DesktopUI-InstrumentAvailability})
+				\item Správce mapování parametrů pluginu pro nástroje (obr. \ref{fig:DesktopUI-InstrumentParamMapping})
+				\item Seznam efektů (obr. \ref{fig:DesktopUI-EffectList})
+				\item Zobrazení dostupnosti efektu
+				\item Správce mapování parametrů pluginu pro efekty	(obr. \ref{fig:DesktopUI-EffectParamMapping})		
+				\item Správce presetů
+				\item Editace presetu
 			\end{enumerate}
 			\caption{Seznam obrazovek desktopového uživatelského rozhraní aplikace}\label{list:DesktopUIScreen}		
 		\end{mylist}
+	
+		Pro vybrané obrazovky byly sestrojeny drátěné modely 
+		(obr. \ref{fig:DesktopUI-EffectList}, \ref{fig:DesktopUI-InstrumentAvailability}, 
+		\ref{fig:DesktopUI-EffectParamMapping}, \ref{fig:DesktopUI-InstrumentParamMapping}).
+		
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{DesktopUI-EffectList}
+			\caption{Drátěný model obrazovky \texttt{D6} (seznam efektů)}\label{fig:DesktopUI-EffectList}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{DesktopUI-InstrumentAvailability}
+			\caption{Drátěný model obrazovky \texttt{D4} (zobrazení dostupnosti) nástroje}\label{fig:DesktopUI-InstrumentAvailability}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{DesktopUI-EffectParamMapping}
+			\caption{Drátěný model obrazovky \texttt{D8} (správce mapování parametrů pluginu pro efekty)}\label{fig:DesktopUI-EffectParamMapping}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{DesktopUI-InstrumentParamMapping}
+			\caption{Drátěný model obrazovky \texttt{D5} (správce mapování parametrů pluginu pro nástroje)}\label{fig:DesktopUI-InstrumentParamMapping}
+		\end{figure}
 
+	\vfill
+	\pagebreak
 	\section{Uživatelské rozhraní kontroleru}
 		
+		Jelikož byl v řešení vybrán hardwarový kontroler podporující protokol Automap,
+		bylo navrženo uživatelské rozhraní pro celou skupinu kontrolerů společnosti Novation
+		podporující tento protokol. Všechna taková zařízení disponují téměř shodným 
+		rozvržením prvků (obr. \ref{fig:AutomapUI}).
+		
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{AutomapUI}
+			\caption{Ovládací panel zařízení od společnosti Notvation podporující protokol Automap.}\label{fig:AutomapUI}
+		\end{figure}	
+
+		V rámci návrhu uživatelského rozhraní pro hardwarový kontroler byl kladen důraz na oblast a ovládací prvky umístěné kolem displeje.
+	 	Seznam \ref{list:DesktopUIScreen} shrnuje klíčocé obrazovky hardwarového kontroleru.
+		\begin{mylist}
+			\begin{enumerate}[label=\textbf{C\arabic*.}]
+				\item Procházení presetů (obr. \ref{fig:ControllerUI-PresetSwitch})
+				\item Ovládání parametrů nástroje (obr. \ref{fig:ControllerUI-PresetDetail})
+				\item Souhrnné ovládání efektů  (obr. \ref{fig:ControllerUI-EffectOverview})
+				\item Ovládání parametrů efektu (obr. \ref{fig:ControllerUI-EffectDetail})
+			\end{enumerate}
+			\caption{Seznam obrazovek desktopového uživatelského rozhraní aplikace}\label{list:DesktopUIScreen}		
+		\end{mylist}
+		
+		\begin{sidewaysfigure}
+			\centering
+			\includegraphics[width=0.9\textwidth]{ControllerUI-PresetSwitch}
+			\caption{Drátěný model obrazovky \texttt{C1} (procházení presetů)}
+			\label{fig:ControllerUI-PresetSwitch}			
+			\vspace{1.2cm}
+			\includegraphics[width=0.9\textwidth]{ControllerUI-PresetDetail}
+			\caption{Drátěný model obrazovky \texttt{C2} (ovládání parametrů nástroje)}
+			\label{fig:ControllerUI-PresetDetail}
+		\end{sidewaysfigure}
+		
+		\begin{sidewaysfigure}
+			\centering
+			\includegraphics[width=0.9\textwidth]{ControllerUI-EffectOverview}
+			\caption{Drátěný model obrazovky \texttt{S5} (souhrnné ovládání efektů)}
+			\label{fig:ControllerUI-EffectOverview}			
+			\vspace{1.2cm}
+			\includegraphics[width=0.9\textwidth]{ControllerUI-EffectDetail}
+			\caption{Drátěný model obrazovky \texttt{S5} (ovládání parametrů efektu)}
+			\label{fig:ControllerUI-EffectDetail}
+		\end{sidewaysfigure}
+	
 		
 \chapter{Implementace vlastního řešení}
 	\section{USB}
