@@ -14,7 +14,11 @@
 
 \usepackage[utf8]{inputenc} % LaTeX source encoded as UTF-8
 \usepackage{float}
+\usepackage{subfig}
+\usepackage{enumitem}
 
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[placement={!ht},name=Seznam]{mylist}
 % \usepackage{amsmath} %advanced maths
 % \usepackage{amssymb} %additional math symbols
 
@@ -263,10 +267,35 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Hlavní proces vytváří další vedlejší nezávislé procesy, které slouží k zobrazení oken s webovým prohlížečem, kde je načtena klientská část aplikace.
 		Ke komunikaci mezi hlavním a vedlejšími procesy framework poskytuje jednoduché rozhraní.
 
-		Původním záměrem bylo využít hlavní proces pouze jako proxy pro protokoly OSC a Automap mezi příslušnými komponentami a klientskou částí aplikace.
+		Jelikož lze komunikaci mezi aplikací a hardwarovým kontrolerem implementovat pouze v hlavním procesu, bylo původním záměrem využítí architektonického vzoru tlustý klient. 
+		Hlavní proces by fungoval pouze jako proxy pro protokoly OSC a Automap mezi příslušnými komponentami a klientskou částí aplikace (diagram \ref{fig:AppArchitectureA}).
 		Při testování bylo zjištěno, že rozhraní pro komunikaci mezi hlavním a vedlejšími vlákny není pro tento účel dostatečně rychlé a nemá dostatečně rychlou odezvu.
 		Jako řešení tohoto problému bylo zvoleno rozdělení aplikace na serverovou a klientskou část, kde mezi oběmi stranami nebude docházet k objemné komunikaci citlivé na dobu odezvy.
-		Jelikož lze předpokládat, že velká část stavu aplikace bude sdílená serverovou i klientskou částí, byl vybrán pro obě části framework pro vývoj webových aplikací Angular a knihovna NGXS představující framework pro řízení stavu podle patternu CQRS\cite{cqrs}, který vychází ze vzoru CQS\cite{cqs}. Výhodou je pak možnost automatické synchronizace stavu mezi serverovou a klientskou částí.
+		Jelikož lze předpokládat, že velká část stavu aplikace bude sdílená serverovou i klientskou částí, byl vybrán pro obě části framework pro vývoj webových aplikací Angular a knihovna NGXS představující framework pro řízení stavu podle patternu CQRS\cite{cqrs}, který vychází ze vzoru CQS\cite{cqs}. Výhodou je pak možnost automatické synchronizace stavu mezi serverovou a klientskou částí (diagram \ref{fig:AppArchitectureB}).
+		
+
+
+
+		\begin{figure}
+			\centering
+%			\parbox{5cm}{
+%				\includegraphics[width=5.5cm]{Dip-AppArchitecture1}
+%				\caption{Původní návrh architektury aplikace.}
+%				\label{fig:AppArchitectureA}}
+%			\qquad
+%			\begin{minipage}{5cm}
+%				\includegraphics[width=5cm]{Dip-AppArchitecture2}
+%				\caption{Optimalizovaný návrh architektury.}
+%				\label{fig:AppArchitectureB}
+%			\end{minipage}
+			
+			\subfloat[Původní návrh]{{\includegraphics[width=5.8cm]{Dip-AppArchitecture1}								\label{fig:AppArchitectureA} }}
+			\qquad
+			\subfloat[Optimalizovaný návrh]{{\includegraphics[width=5.8cm]{Dip-AppArchitecture2}
+				\label{fig:AppArchitectureB} }}
+			\caption{Srovnání původního a konečného návrhu architektury aplikace.}
+			\label{fig:AppArchitecture}
+		\end{figure}
 		
 		Pro klientskou část byla použita knihovna \texttt{Angular Material UI}, která poskytuje základní prvky pro tvorbu uživatelského rozhraní.
 
@@ -331,7 +360,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		K dispozici bude též ovládání hlavní hlasitosti a tzv. funkce Panic pro ukonćení všech znějících tónů.
 	
 	\section{Doménový model}
-		Z analýzy požadavků byl navržen doménový model (\ref{fig:DomainModel}). 
+		Z analýzy požadavků byl navržen doménový model (\ref{obr. fig:DomainModel}),
+		který modeluje entity problémové domény a jejich vzájemné vztahy.
 		\begin{figure}
 			\centering
 			\includegraphics[width=1\textwidth]{DomainModel}
@@ -339,6 +369,15 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\end{figure}		
 
 	\section{Desktopové uživatelské rozhraní}
+		Při návrhu uživatelského rozhraní desktopové aplikace
+		byl sestrojen následující seznam obrazovek.
+		\begin{mylist}
+			\begin{enumerate}[label=\textbf{S\arabic*}]
+				\item Seznam projektů
+				\item Editace projektu
+			\end{enumerate}
+			\caption{Seznam obrazovek desktopového uživatelského rozhraní aplikace}\label{list:DesktopUIScreen}		
+		\end{mylist}
 
 	\section{Uživatelské rozhraní kontroleru}
 		
