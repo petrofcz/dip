@@ -37,7 +37,7 @@
 % ODTUD DAL VSE ZMENTE
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-\department{Katedra \ldots softwarového inženýrství}
+\department{Katedra softwarového inženýrství}
 \title{MIDI stage piano}
 \authorGN{Petr} %(krestní) jméno (jména) autora
 \authorFN{Svoboda} %príjmení autora
@@ -137,14 +137,24 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\begin{figure}[H]
 				\centering
 				\includegraphics[width=1\textwidth]{DAW}
-				\caption[Bitwig Studio]{Ukázka prostředí Bitwig Studio}\label{fig:DAW}
+				\caption{Ukázka prostředí Bitwig Studio}\label{fig:DAW}
 			\end{figure}
 			
 \clearpage
 		\subsection{Prostředí pro živá vystoupení}
 			S příchodem výkonných mobilních zařízení se začaly objevovat prostředí pro živá vystoupení.
-			Poněvadž jde o novou oblast a uživatelská základna není příliš početná, každé řešení přichází
-			s unikátním přístupem. Následuje výčet vlastností, které jsou pro většinu takových řešení společné.
+			Poněvadž jde o novou oblast a uživatelská základna není příliš početná, každé řešení přichází s unikátním přístupem. 
+			Jasnou výhodou tohoto řešení je svoboda ve volbě pluginů
+			představujících virtuální nástroje a efekty.
+			Další velkou výhodou je možnost připojit
+			k systému více jednoduchých MIDI klaviatur.
+			MIDI klaviatury vynikají oproti hardwarovým nástrojům
+			nízkými pořizovacími náklady a nízkou hmotností.
+			K systému využívající prostředí pro živá vystoupení
+			lze připojit jakoukoliv MIDI klaviaturu. Umělec
+			tak může v optimálním případě na zkoušky a vystoupení cestovat pouze s notebookem nebo tabletem, kde má uloženy veškeré zvuky a nastavení.
+			
+			Následuje výčet vlastností, které jsou pro většinu takových řešení společné.
 			
 			\begin{itemize}
 				\item Snaha o optimalizaci využití systémových prostředků.
@@ -162,7 +172,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\subsubsection{Prostředí Cantabile}
 				Software Cantabile od společnosti Topten Software představuje robustní řešení.
 				Implementuje pokročilé optimalizace využití systémových prostředků a
-				disponuje širokými možnostmi konfigurace, ovládání však není příliš intuitivní. (obr. \ref{fig:Cantabile})
+				disponuje širokými možnostmi konfigurace, ovládání však není příliš intuitivní (viz obr. \ref{fig:Cantabile}).
 				Prostředí umožňuje použití více klaviatur, jejich rozdělení na zóny a poskytuje bohaté možnosti
 				pro směrování a transformaci MIDI zpráv, což zajišťuje vysokou flexibilitu.
 				Způsob ukládání nastavení VST pluginů poskytuje více strategií.
@@ -173,13 +183,14 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				\begin{figure}[H]
 					\centering
 					\includegraphics[width=1\textwidth]{Cantabile}
-					\caption[Bitwig Studio]{Ukázka prostředí Cantabile}\label{fig:Cantabile}
+					\caption{Ukázka prostředí Cantabile}\label{fig:Cantabile}
 				\end{figure}
 		
 	\section{Závěr}
 		Z provedeného průzkumu plyne, že existují různé možnoti řešení. Každé z nich řeší problém různým způsobem a má své výhody a nevýhody.
 		Nebylo však nalezeno řešení, které by přinášelo možnost využití virtuálních hudebních nástrojů a integraci s hardwarovým kontrolerem tak,
-		aby bylo dosaženo chování hardwarových hudebních nástrojů. Proto byla zvolena cesta návrhu vlastního řešení.
+		aby bylo dosaženo chování hardwarových hudebních nástrojů. Proto byla zvolena cesta návrhu vlastního řešení, které kombinuje přístup
+		prostředí určených pro živá vystoupení a chování hardwarových nástrojů.
 
 \chapter{Návrh vlastního řešení}
 	\section{Architektura}
@@ -188,7 +199,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		budou rozebrány jednotlivé části architektury.
 		
 		\subsection{VST host}
-			Každý virtuální hudební nástroj podporující VST API\cite{vstdoc}, tzv. VST plugin, potřebuje ke svému běhu hostitelské prostředí, tzv. VST host aplikaci, která API implementuje\cite{vstdoc}.
+			Každý virtuální hudební nástroj podporující VST API, tzv. VST plugin, potřebuje ke svému běhu hostitelské prostředí, tzv. VST host aplikaci, která API implementuje\cite{vstdoc}.
 			
 			VST API umožňuje pluginům generovat zvukovou vlnu na základě konfigurovatelných
 			parametrů a vstupních dat, jako jsou MIDI události, či zvukový signál.
@@ -230,7 +241,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\begin{figure}[H]
 				\centering
 				\includegraphics[width=1\textwidth]{Architecture}
-				\caption[Architektura řešení]{Architektura řešení}\label{fig:Architecture}
+				\caption{Architektura řešení}\label{fig:Architecture}
 			\end{figure}
 \clearpage
 	\section{Analýza kompatibility}
@@ -289,7 +300,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		Pro klientskou část byla použita knihovna \texttt{Angular Material UI}, která poskytuje základní prvky pro tvorbu uživatelského rozhraní.
 
-		Pro servrovou část byla využita knihovna \texttt{tessel/node-usb}, jejíž úlohou je zpřístupnění funkcí knihovny \texttt{libusb}\cite{libusb}, která poskytuje možnost low-level komunikace s USB zařízeními.
+		Pro servrovou část byla využita knihovna \texttt{tessel/node-usb}, jejíž úlohou je zpřístupnění funkcí knihovny \texttt{libusb}, která poskytuje možnost low-level komunikace s USB zařízeními\cite{libusb}.
 		V serverové části též byla využita knihovna \texttt{node-osc}, která umožňuje komunikaci přes OSC a UDP protokol.
 		
 	\section{Funkční požadavky}
@@ -315,7 +326,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			průběh a zadat suffix pro zobrazení na displeji. Rozsah hodnot parametrů pluginu bude možné nastavovat i přes tzv. learn metodu, která 
 			umožňuje hodnoty zvolit přímo v prostředí VST pluginu. Na LED prstencích otočných enkodérů kontroleru bude hodnota parametru indikována lineárně na celém rozsahu enkodéru.
 			
-			\item \textbf{Lineární s položkovým zobrazením} - Jedná se o rozšíření Lineární strategie rožšířené o možnost zadání položek, které
+			\item \textbf{Lineární s položkovým zobrazením} - Jedná se o rozšíření lineární strategie s možností zadání položek, které
 			budou zobrazeny na displeji v závislosti na hodnotě parametru pluginu. Každá položka bude určena názvem a hraniční hodnotou parametru VST pluginu.
 			Položky bude možné přidávat i za pomoci tzv. learn metody, kdy je možné zadat hraniční hodnotu přímo v prostředí VST pluginu.
 
@@ -327,7 +338,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		V editoru presetů bude možné zadat až 8 kategorií zvuků, které bude možné řadit a přejmenovat.
 		Pro každou kategorii bude možné přidat nový preset, či duplikovat stávající. Preset určuje použitý VST plugin,
 		strategii inicializace pluginu vč. její konfigurace, rozdílovou sadu hodnot parametrů pluginu a rozdílovou sadu hodnot parametrů efektů vrstvy.
-		Rozdílová sada bude pro danou vrstvu vytvářena při změně v parametrech pluginu v době, kdy je plugin aktivní. Zaznamenanou sadu bude možné pro aktivní preset uložit.
+		Rozdílová sada bude pro danou vrstvu vytvářena při změně v parametrech pluginu v době, kdy je preset aktivní. Zaznamenanou sadu bude možné pro aktivní preset uložit.
 		V rámci inicializace VST pluginu budou k dispozici následující strategie:
 		\begin{itemize}
 			\item \textbf{Snímek všech parametrů} - V této strategii bude možné pořídit snímek hodnot všech parametrů VST pluginu. Snímek bude načten při načtení presetu.
@@ -347,16 +358,64 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		hlavní položka stránky mapování pro každý efekt, který je v dané vrstvě dostupný. Bude možné ovládat i všechny parametry efektu.
 		Kontroler uživateli umožní přepínat a indikovat právě ovládanou vrstvu. 
 		Za pomocí posuvných prvků kontroleru bude možné ovládat hlasitosti jednotlivých vrstev.
-		K dispozici bude též ovládání hlavní hlasitosti a tzv. funkce Panic pro ukonćení všech znějících tónů.
+		K dispozici bude též ovládání hlavní hlasitosti a tlačítko pro ukonćení všech znějících tónů.
 	
 	\section{Doménový model}
-		Z analýzy požadavků byl navržen doménový model (obr. \ref{fig:DomainModel}),
-		který modeluje entity problémové domény a jejich vzájemné vztahy.
+		Z analýzy požadavků byl navržen doménový model (viz obr. \ref{fig:DomainModel}),
+		který zobrazuje entity problémové domény a jejich vzájemné vztahy.
 		\begin{figure}
 			\centering
 			\includegraphics[width=1\textwidth]{DomainModel}
-			\caption[Doménový model]{Doménový model}\label{fig:DomainModel}
+			\caption{Doménový model}\label{fig:DomainModel}
 		\end{figure}		
+
+	\section{Struktura projektu Bidule}
+		Aby mohly být projekty uložené v programu Bidule načteny ve vlastní aplikaci, je třeba definovat strukturu
+		projektů. Projekt vytvořený v programu Bidule se skládá z modulů, které jsou uspořádány do stromové struktury
+		a jsou vzájemně propojeny. Modulem může být např. VST plugin, vstupně-výstupní rozhraní pro audio nebo MIDI.
+		Program Bidule též poskytuje množství interních modulů. Moduly lze agregovat do samostatných celků a vytvářet tak
+		vlastní znovupoužitelné moduly. V následujících podkapitolách budou rozebrány jednotlivé části architekury projektu programu Bidule.
+		Příklad možné architektury lze vidět na diagramu \ref{fig:BiduleComponents}.
+		
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{BiduleComponents}
+			\caption{Ukázka architektury projektu Bidule}\label{fig:BiduleComponents}
+		\end{figure}
+			
+		\subsection{Modul manuálu}\label{sec:Bidule-Manual}
+			Modul manuálu se skládá ze skupiny vrstev (viz kapitolu \ref{sec:Bidule-Layer}) a modulu pro zajištění smíchání zvukového signálu
+			jednotlivých vrstev. Představuje konfiguraci dostupnou pro připojenou klaviaturu. Každá klaviatura může mít různý počet
+			vrstev. Doporučeno je však použití stejné konfigurace pro všechny manuály kvůli snazší orientaci uživatele.
+			V projektu může být zadán jeden až čtyři manuály.
+
+		\subsection{Modul vrstvy}\label{sec:Bidule-Layer}
+			Modul vrstvy představuje sadu vstupních efektů, virtuálních nástrojů a výstupních efektů.
+			Skupina vrstev je součástí modulu manuálu (viz kapitolu \ref{sec:Bidule-Manual}).
+			Manuál může obsahovat jednu až čtyři vrstvy.
+			Každá vrstva může obsahovat různé moduly. Pro jednodušší orientaci uživatele je však doporučeno
+			uchovat všehcny dostupné vrstvy ve stejné konfiguraci, a to i mezi jednotlivými manuály.
+			
+		\subsection{Globální efekty}
+			V projektu je možné definovat vstupní a výstupní efekty, které budou k dispozici nezávisle na vrstvě
+			a budou aplikovány na veškerá vstupní a výstupní multimediální data. Příkladem takového efektu může být
+			transpozice tónů nebo ekvalizace zvukového výstupu. Vstupní a výstupní efekty jsou rozděleny do dvou skupin.
+			Projekt může obsahovat až 8 vstupních a 8 výstupních efektů.
+
+		\subsection{Vstupně-výstupní rozhraní}
+			V projektu musí být k dispozici alespoň jedno MIDI vstupní zařízení a jedno zvukové vstupně-výstupní zařízení.
+			Vstup z MIDI zařízení je směrován do skupiny komponent představujících globálních MIDI efekty.
+			Výstup ze skupiny komponent představující globální zvukové efekty je pak směrován do výstupního zvukového zařízení.
+			V případě potřeby lze také směrovat vstup ze zvukového zařízení do nástrojů a efektů, které podporují zpracování
+			zvukového signálu.
+			
+		\subsection{Propojení modulů}
+			Jelikož musí být zachována variabilita směrování MIDI zpráv, celý systém pracuje pouze s jedním zdrojem MIDI zpráv.
+			Každá MIDI zpráva má určené číslo kanálu, které může nabývat 16 různých hodnot.
+			U zdrojových MIDI zprávy lze v programu Bidule libovolně přemapovat kanál pomocí interních modulů, např. na základě rozsahu klaviatury, připojeného manuálu apod.
+			Podle kanálu zprávy je pak zpráva směrována do příslušného modulu manuálu. Smíchání zvukového signálu ze všech modulů manuálu je zajištěno interním modulem programu Bidule.
+	
+			Celé propojení jednotlivých modulů lze vidět na obr. \ref{fig:BiduleComponents}.
 
 	\section{Desktopové uživatelské rozhraní}
 		Při návrhu uživatelského rozhraní desktopové aplikace byl sestrojen následující seznam obrazovek.
@@ -410,14 +469,15 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		podporující tento protokol. Všechna taková zařízení disponují téměř shodným 
 		rozvržením prvků (obr. \ref{fig:AutomapUI}).
 		
-		\begin{figure}
+		\begin{figure}[H]
 			\centering
 			\includegraphics[width=1\textwidth]{AutomapUI}
 			\caption{Ovládací panel zařízení od společnosti Notvation podporující protokol Automap.}\label{fig:AutomapUI}
 		\end{figure}	
 
-		V rámci návrhu uživatelského rozhraní pro hardwarový kontroler byl kladen důraz na oblast a ovládací prvky umístěné kolem displeje.
-	 	Seznam \ref{list:DesktopUIScreen} shrnuje klíčocé obrazovky hardwarového kontroleru.
+		V rámci návrhu uživatelského rozhraní pro hardwarový kontroler byl kladen důraz na oblast ovládacích prvků umístěných kolem displeje.
+	 	Seznam \ref{list:DesktopUIScreen} shrnuje klíčové obrazovky hardwarového kontroleru. Jednotlivé obrazovky budou diskutovány
+	 	v dalších podkapitolách.
 		\begin{mylist}
 			\begin{enumerate}[label=\textbf{C\arabic*.}]
 				\item Procházení presetů (obr. \ref{fig:ControllerUI-PresetSwitch})
@@ -442,14 +502,75 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\begin{sidewaysfigure}
 			\centering
 			\includegraphics[width=0.9\textwidth]{ControllerUI-EffectOverview}
-			\caption{Drátěný model obrazovky \texttt{S5} (souhrnné ovládání efektů)}
+			\caption{Drátěný model obrazovky \texttt{C3} (souhrnné ovládání efektů)}
 			\label{fig:ControllerUI-EffectOverview}			
 			\vspace{1.2cm}
 			\includegraphics[width=0.9\textwidth]{ControllerUI-EffectDetail}
-			\caption{Drátěný model obrazovky \texttt{S5} (ovládání parametrů efektu)}
+			\caption{Drátěný model obrazovky \texttt{C4} (ovládání parametrů efektu)}
 			\label{fig:ControllerUI-EffectDetail}
 		\end{sidewaysfigure}
 	
+		\subsection{Hlavní navigace}
+			Pro hlavní navigaci mezi obrazovkami kontroleru byla zvolena dvojice tlačítek umístěných nalevo od displeje.
+			Jednoduchým stisknutím spodního tlačítka dojde k načtení obrazovky ovládání parametrů nástroje.
+			Pokud uživatel stiskne vrchní tlačítko, je zobrazena obrazovka procházení presetů.
+			Při dvojitém stisknutí jednoho z tlačítek dojde k načtení obrazovky souhrnného ovládání efektů.
+			Jestliže bylo dvakrát stisknuto horní z tlačítek, budou zobrazeny vstupní efekty vrstvy, v případě spodního
+			tlačítka bude zobrazeno ovládání výstupních efektů pro danou vrstvu.
+			Při trojitém stisknutí se dvojice tlačítek chová podobně jako v případě dvojitého stisknutí,
+			k ovládání efektů ale nedochází na aktivní vrstvě, ale na globální úrovni.
+			Volba aktivní obrazovky je indikována pomocí LED prvku příslušného tlačítka. V případě obrazovek,
+			které lze aktivovat vícenásobným stisknutím tlačítka je stav indikován rychlostí blikání LED prvku.			
+		
+			Pro výběr aktuálního manuálu a vrstvy byla zvolena vertikální řada tlačítek pod dvojicí tlačítek sloužicích k hlavní navigaci.
+			Tlačítka představují jednotlivé manuály. Stisknutím tlačítka dojde přepnutí na vrstvu manuálu určené podle počtu stisknutí.
+			Aktuální manuál je indikován LED prvkem příslušného tlačítka. Rychlost blikání indikuje pořadí zvolené vrstvy, přičemž
+			konstantní rozsvícení LED značí volbu první vrstvy.
+		\subsection{Procházení presetů (obrazovka C1)}\label{sec:C1}
+			Jak lze vidět z drátěného modelu \ref{fig:ControllerUI-PresetSwitch}, na obrazovce procházení presetů jsou na prvním řádku displeje
+			zobrazeny kategorie presetů, na druhém řádku je zobrazen seznam presetů v dané kategorii.
+			Jelikož množství presetů v rámci jedné kategorie může být značné, je uplatněno stránkování presetů.
+			Pro volbu kategorie a její stránky slouží první řada tlačítek umístěných pod displayem.
+			Při stisku tlačítka dojde k volbě příslušné kategorie. Počet stisknutí pak vyjadřuje pořadí stránky presetů, která má být zobrazena.
+			
+			Na druhém řádku displeje jsou zobrazeny presety pro danou stránku kategorie. Při kliknutí na tlačítko 
+			z druhé řady tlačítek pod displayem dojde k výběru aktivního presetu.
+			
+			Aktuální kategorie a preset jsou indikovány rozsvícenou LED u příslušného tlačítka.
+			
+			Po aktivování obrazovky je automaticky indikován aktivní preset pro
+			aktuální vrstvu a jeho zařazení v kategorii.
+			
+		\subsection{Ovládání parametrů nástroje (obrazovka C2)}\label{sec:C2}
+			Na této obrazovce lze ovládat parametry nástroje a vybrat aktivní preset z historie nedávno aktivovaných presetů (viz diagram \ref{fig:ControllerUI-PresetDetail}).
+			V prvním řádku displeje je možné vidět název mapování parametru nástroje nebo jeho aktuální hodnotu. V druhém řádku
+			je zobrazena historie nedávno použitých presetů. V posledním poli druhého řádku displeje je pak zobrazen název
+			aktuálního presetu.
+			
+			Aktuální stav hodnoty parametru nástroje je indikován nepřetržitě LED prstencem umístěným okolo otočného enkodéru na základě
+			zvolené strategie mapování. Při změně parametru nástroje je hodnota zobrazena i graficky v příslušném poli na displeji, jinak je v poli zobrazen název mapování parametru.
+			Formát zobrazení hodnoty parametru na displeji je opět určen strategií mapování parametru.
+			
+			Při stisku tlačítka z první řady pod displayem dojde k nastavení hodnoty parametru nástroje na výchozí hodnotu určenou aktuálně zvoleným presetem.		
+			Pokud uživatel stiskne tlačítko z druhé řady, dojde k načtení presetu příslušného záznamu historie, včetně neuložených rozdílových sad hodnot parametrů nástroje a efektů.
+			
+		\subsection{Souhrnné ovládání efektů (obrazovka C3)}\label{sec:C3}
+			Jelikož efekty většinou disponují jedním hlavním parametrem, který určuje míru použití efektu,
+			na obrazovce souhrnného ovládání efektů (viz diagram \ref{fig:ControllerUI-EffectOverview}) lze ovládat pro každý
+			efekt právě tento zástupný parametr.
+			
+			První řádek displaye a související řada tlačítek se chová podobně jako v případě obrazovky ovládání parametrů nástroje
+			s tím rozdílem, že jsou použity hlavní mapování parametrů každého efektu namísto mapování parametrů nástroje.
+			Navíc je místo zobrazení názvu mapování parametru na displeji vždy zobrazena hodnota parametru, jelikož je zřejmé,
+			že je se jedná o hlavní parametr pro daný efekt.
+			
+			Na druhém řádku disleje je zobrazen seznam dostupných efektů pro danou vrstvu a umístění. Při stisknutí tlačítka
+			z druhé řady je načtena obrazovka ovládání všech parametrů příslušného efektu (viz. kapitolu \ref{sec:C4}).
+		
+		\subsection{Ovládání parametrů efektu (obrazovka C4)}\label{sec:C4}
+			Na této obrazovce je k dispozici ovládání parametrů efektu (viz diagram \ref{fig:ControllerUI-EffectDetail}).
+			Chování je podobné jako u obrazovky ovládání parametrů nástroje (viz sekci \ref{sec:C2}), druhá řada displeje a tlačítek
+			slouží k přepínání ovládaného efektu podobně jako u obrazovky souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
 		
 \chapter{Implementace vlastního řešení}
 	\section{USB}
