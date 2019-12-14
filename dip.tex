@@ -476,7 +476,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\end{figure}	
 
 		V rámci návrhu uživatelského rozhraní pro hardwarový kontroler byl kladen důraz na oblast ovládacích prvků umístěných kolem displeje.
-	 	Seznam \ref{list:DesktopUIScreen} shrnuje klíčové obrazovky hardwarového kontroleru. Jednotlivé obrazovky budou diskutovány
+	 	Seznam \ref{list:ControllerUIScreen} shrnuje klíčové obrazovky hardwarového kontroleru. Jednotlivé obrazovky budou diskutovány
 	 	v dalších podkapitolách.
 		\begin{mylist}
 			\begin{enumerate}[label=\textbf{C\arabic*.}]
@@ -485,7 +485,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				\item Souhrnné ovládání efektů  (obr. \ref{fig:ControllerUI-EffectOverview})
 				\item Ovládání parametrů efektu (obr. \ref{fig:ControllerUI-EffectDetail})
 			\end{enumerate}
-			\caption{Seznam obrazovek desktopového uživatelského rozhraní aplikace}\label{list:DesktopUIScreen}		
+			\caption{Seznam obrazovek desktopového uživatelského rozhraní aplikace}\label{list:ControllerUIScreen}		
 		\end{mylist}
 		
 		\begin{sidewaysfigure}
@@ -573,15 +573,50 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			slouží k přepínání ovládaného efektu podobně jako u obrazovky souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
 		
 \chapter{Implementace vlastního řešení}
-	\section{USB}
-
-		- Implementace midi přes USB
-
-	\section{NGXS}
+	\section{Komunikace přes USB}
+		Pro komunikaci s hardwarovým kontrolerem nebylo možné použít dostupné API pro použití MIDI protokolu,
+		jelikož se zařízení systému nejeví jako standardní MIDI zařízení. Formát komunikace však příslušné třídě USB rozhraní odpovídá.
+		Proto bylo nezbytné implementovat vrstvu, která umožní přijímat a odesílat MIDI zprávy typu CC a SysEx
+		podle protokolu USB třídy pro MIDI zařízení\cite{usbmidi}.
 		
-		- Synchronizace
+		Zprávy typu CC jsou opatřeny jednoduchou hlavičkou a celá zpráva má konstantní délku 4B.
 		
-		- Stavy
+		SysEx zprávy představují zprávy variabilní délky. Jelikož lze v jednom packetu přenést pouze 4B,
+		je třeba zprávy tohoto typu rozdělit na zarovnané části a ty odesílat, resp. zpracovávat samostatně.
+		
+		Třída \texttt{MidiAdapter} tak poskytuje částečnou
+		implementaci tohoto protokolu. Třída \texttt{USBDriver} poskytuje jednoduché rozhraní pro komunikaci 
+		s hardwarovým kontrolerem připojeným přes USB.
+
+	\section{Stavový model aplikace a knihovna NGXS}
+		Aplikace je rozdělena na klientskou a serverovou část. Jelikož hlavní logika ovládání hardwarového kontroleru a VST host aplikace
+		musí vykazovat co nejnižší odezvu, je třeba, aby byl dostupný aktuální stav aplikace v serverové části.
+		Zároveň však musí být stav přístupný i části klientské, aby mohly být reflektovány změny stavu iniciované přes
+		hardwarový kontroler nebo VST host aplikaci.
+
+		Knihovna NGXS představuje framework pro správu stavu aplikace podle návrhového vzoru Flux\cite{flux}, který vychází ze vzoru CQRS\cite{flux-cqrs}. Výhodou je možnost použití vzoru Observer u celého stavu aplikace a docílit tím asynchronního
+		přístupu ke stavu nebo jeho částem\cite{mansilla2018reactive}. Stav je aktualizován tzv. akcemi, které lze kdykoliv vyvolat,
+		mají určený jednoznačně identifikovaný typ a mohou nést libovolná data.
+		
+		Pro synchronizaci stavu mezi klientskou a serverovou částí aplikace byla implementována vrstva, která funguje jako proxy
+		pro akce vyvolané v obou částech aplikace. Přenos akcí probíhá přes systém zasílání zpráv poskytovaný frameworkem Electron.
+		Veškeré akce vyvolané v jedné z částí aplikace jsou serializovány a odesílány ve formě zprávy do opačné části aplikace, kde
+		probíhá deserializace a předání akce ke zpracování frameworkem NGXS. Při vyvolání akce v jedné části aplikace tak dojde
+		ke změně stavu v serverové i klientské části zároveň. U každé zprávy lze nastavit příznak určující, že akce nemá být odeslána
+		do opačné strany aplikace. Zároveň je možné stanovit tzv. blacklist, tedy seznam akcí, které nebudou předávány druhé straně.
+		Lze tak filtrovat např. interní akce frameworku NGXS a jeho přídavných modulů k zamezení vzniku jejich duplicity nebo zacyklení.
+		Jelikož obě části aplikace používají pouze část celého stavu, jsou předané akce měnící stav irelevantní pro danou část aplikace  jednoduše ignorovány, jelikož v dané části aplikace není zaregistrována komponenta, která by na zprávy reagovala změnou lokálního stavu.
+		Možná je budoucí optimalizace komunikace zamezením přenosu irelevantních akcí.
+		
+		Při návrhu jednotlivých částí stavu bylo třeba dbát na požadavek, aby nedocházelo k přenosu zpráv (a tedy i vyvolávání automaticky předávaných akcí) s vysokou frekvencí nebo velkým množstvím dat. Ve sdílené části stavu aplikace tak nebude zahrnuta např. informace o aktuálních hodnotách parametrů VST pluginů, jelikož může docházet k jejich intenzivním změnám ze strany VST hosta nebo hardwarového kontroleru.
+		
+		Model stavu aplikace je zobrazen na diagramu TODO. Struktura stavu je normalizovaná z důvodu zamezení duplicity dat
+		a zajištění datové konzistence\cite{state-normalization}.
+		
+		
+		
+		
+		
 		
 	\section{OSC}
 	
