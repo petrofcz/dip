@@ -610,15 +610,83 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		Při návrhu jednotlivých částí stavu bylo třeba dbát na požadavek, aby nedocházelo k přenosu zpráv (a tedy i vyvolávání automaticky předávaných akcí) s vysokou frekvencí nebo velkým množstvím dat. Ve sdílené části stavu aplikace tak nebude zahrnuta např. informace o aktuálních hodnotách parametrů VST pluginů, jelikož může docházet k jejich intenzivním změnám ze strany VST hosta nebo hardwarového kontroleru.
 		
-		Model stavu aplikace je zobrazen na diagramu TODO. Struktura stavu je normalizovaná z důvodu zamezení duplicity dat
-		a zajištění datové konzistence\cite{state-normalization}.
+		Struktura modelu stavu aplikace je normalizovaná z důvodu zamezení duplicity dat a zajištění datové konzistence\cite{state-normalization}. Pro CRUD operace nad
+		entitami bylo vytvořeno vlastní jednoduché API.
 		
+		V následujícíh podkapitolách následuje výčet jednotlivých
+		částí modelu stavu aplikace.
 		
+		\subsection{Synchronizace přes IPC}
+			Pro klientskou i serverovou část byly implementovány třídy \texttt{IpcActionTransmitterPlugin} a 
+			\texttt{IpcActionReceiver}. Třída \texttt{IpcActionTransmitterPlugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií  akcí vyvolaných přes NGXS framework	druhé straně aplikace. K příjmu zprávy slouží třída \texttt{IpcActionReceiver}, která akci předá
+			NGXS frameworku tak, že simuluje lokální vyvolání dané akce. Zprávy jsou serializovány do formátu JSON a k jejich přenosu dochází
+			za použití IPC API frameworku Electron.
 		
+		\subsection{API pro CRUD operace nad entitami}
+			Jelikož skrz celou aplikací bude potřeba provádět nad entitami operace typu přidání, čtení, aktualizaci a odstranění, bylo nejprve implementováno API pro tyto operace, aby nebylo nutné využívat duplicitní
+			kód pro každou entitu zvlášť. Implementovány byly operace aktualizace, částečná aktualizace, přidání,
+			přidání s případnou aktualizací a odstranění. Operace pro čtení je triviální a každá třída reprezentující
+			stav pro danou entitu jí implementuje zvlášť.						
 		
+		\subsection{LayoutState}
+			V tomto stavu budou obsažené informace o uložených projektech VST host programu Bidule.
+			Model používá API pro CRUD operace. Stav je globální, jeho obsah tedy není ukládán
+			v závislosti na právě otevřeném projektu. Kromě samotných entit obsahuje informace o 
+			právě načteném projektu a příznak určující zda právě probíhá načítání layoutu.
+			V modelu je obsažena logika pro řazení projektů podle času posledního použití.			
+			
+		\subsection{FrontendState}
+			Tento stav je jediný, který není sdílený mezi serverovou a klientskou částí.
+			Obsahuje informace typické pro klientskou část, např. zda již byla aplikace inicializována.
+			Původním záměrem bylo zahrnout i informace o navigaci, ale k tomuto
+			účelu byla později vybrána knihovna \texttt{ngxs/router-plugin}, která tuto informaci
+			obsahuje v rámci svého vlastního stavu a poskytuje též možnost provést změnu navigace
+			odesláním tzv. akce za použití frameworku NGXS.
 		
+		\subsection{VSTState}
+			V tomto stavu jsou obsaženy informace o dostupných VST pluginech. Stav je uložen 
+			pro každý projekt zvlášť (viz. kapitolu TODO) a je sdílený klientskou i serverovou částí aplikace.
+			Model používá z API pro CRUD operace pouze funkce pro přidání a aktualizaci.
+			Pro získávání entit představujících virtuální nástroje a efekty jsou přítomné příslušné metody.
+			Zároveň je zde implementována obsluha akcí pro správu stránek mapování parametrů
+			VST pluginů pro virtuální nástroje i efekty.
+					
+		\subsection{ManualState}
+			Tento stav obsahuje informace o manuálech a vrstvách dostupných v otevřeném projektu a je sdílený klientskou i serverovou částí aplikace. Není ukládán do perzistentního úložiště.
+			Model používá z API pro CRUD operace pouze funkce pro přidání, jelikož k načtené stavu
+			dochází pouze při otevření projektu. Obahuje informaci o aktuálně zvolené vrstvě, model obsahuje metodu
+			pro získání aktuálně zvoleného manuálu.
 		
-	\section{OSC}
+		\subsection{SessionState}
+			V tomto stavu jsou uloženy informace o aktuálním sezení. Stav je sdílený klientskou i serverovou částí aplikace a není ukládán do perzistentního úložiště.
+			Mezi obsažené informace patří např. ID aktuálně zvolené vrstvy a další informace vycházející z aktuálního stavu navigace z pohledu celé aplikace.
+			
+		\subsection{ParamMappingPageState}
+			Stránka mapování může obsahovat až 8 jednotlivých mapování, v systému se s ní pracuje dále jako s elementárním celkem. 
+			Ve stavu \\\texttt{ParamMappingPageState} je pak uložna aktuálně načtená stránka mapování. Stav není ukládán do perzistentního úložiště a je sdílen klientskou i serverovou částí aplikace. 
+			Kromě funkcí API pro CRUD operace obsahuje model i logiku pro správu jednotlivých mapování. 
+			Poskytuje také možnost řazení jednotlivých mapování v rámci stránky a informaci
+			o aktuálním zvoleném mapování. Impelementována je zde i logika pro načítání uložených stránek mapování
+			z VST efektů a nástrojů.
+			
+		\subsection{PresetCategoryState}
+			Tento stav obsahuje uložené kategorie presetů. Je sdílen klientskou a serverovou částí aplikace
+			a jeho obsah je ukládán do perzistentního úložiště pro každý projekt zvlášť.
+			Používá API pro CRUD operace obsahuje. Dále poskytuje logiku vyřizování CRUD operací samotných presetů
+			z pohledu kategorie. Lze tak presety v rámci kategorie řadit, přidávat, duplikovat, či odebírat.
+			
+		\subsection{PresetState}
+			V tomto stavu jsou obsažené informace o uložených presetech. Je sdílen klientskou a serverovou částí aplikace a jeho obsah je ukládán do perzistentního úložiště pro každý projekt zvlášť.
+			Kromě funkcí z API pro CRUD operace obsahuje logiku pro duplikaci presetů vč. generování
+			názvu duplikovaných presetů.
+			
+		\subsection{PresetSessionState}
+			Tento stav pro každou vrstvu zvlášť uchovává informace o aktuálně načteném presetu.
+			Mezi tyto informace patří např. historie naposledy použitých presetů a příznaky pro 
+			ovládání úpravy aktuálního presetu. Stav je sdílen mezi klientskou a serverovou částí
+			aplikace a není ukládán do perzistentního úložistě.
+		
+	\section{OSC a VST host Bidule}
 	
 		- asynchronni zpracovani
 		- komunikace s Bidule
@@ -663,6 +731,9 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	\item[XML] Extensible markup language
 	\item[CQRS] Command Query Responsibility Segregation
 	\item[CQS] Command Query Separation
+	\item[CRUD] Create, Read, Update, Delete
+	\item[IPC] Inter process communication
+	\item[JSON] JavaScript Object Notation
 \end{description}
 
 
