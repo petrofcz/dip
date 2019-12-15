@@ -218,6 +218,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			
 		\subsection{OSC}		
 			OSC představuje obecný a jednoduchý protokol určený pro přenos zpráv mezi multimediálními zařízeními a aplikacemi\cite{osc}.
+			Obsah zprávy je složen z adresy ve tvaru řetězce a argumentů několika typů.
 			Zprávy jsou přenášeny typicky přes UDP protokol. Multimediální aplikace často poskytují možnost oboustranné integrace
 			se službami třetích stran právě přes OSC protokol.
 
@@ -573,6 +574,14 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			slouží k přepínání ovládaného efektu podobně jako u obrazovky souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
 		
 \chapter{Implementace vlastního řešení}
+	\section{Reaktivní programování}
+		Pro velkou část aplikace bylo zvoleno reaktivní programovací paradigma, které je orientováno
+		na datové toky a šíření změn. Lze tak jednoduše sledovat změny hodnot, provádět 
+		nad nimi různé transformace, filtrování, agregaci a další operace. Podporu reaktivního programování přináší do aplikace
+		použitý framework RxJS\cite{clow2018observers}. Velkou výhodou je možnost udržování počtu naslouchání
+		s využitím např. funkce \\\texttt{switchMap}, zrušení nerelevantních naslouchání pak probíhá automaticky a není předmětem práce programátora.
+		Framework RxJS je využitý též knihovnou NGXS zajišťující správu stavu aplikace (viz kapitolu \ref{sec:NGXS}).
+
 	\section{Komunikace přes USB}
 		Pro komunikaci s hardwarovým kontrolerem nebylo možné použít dostupné API pro použití MIDI protokolu,
 		jelikož se zařízení systému nejeví jako standardní MIDI zařízení. Formát komunikace však příslušné třídě USB rozhraní odpovídá.
@@ -584,11 +593,14 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		SysEx zprávy představují zprávy variabilní délky. Jelikož lze v jednom packetu přenést pouze 4B,
 		je třeba zprávy tohoto typu rozdělit na zarovnané části a ty odesílat, resp. zpracovávat samostatně.
 		
-		Třída \texttt{MidiAdapter} tak poskytuje částečnou
-		implementaci tohoto protokolu. Třída \texttt{USBDriver} poskytuje jednoduché rozhraní pro komunikaci 
-		s hardwarovým kontrolerem připojeným přes USB.
+		Třída \texttt{MidiAdapter} tak poskytuje částečnou implementaci tohoto protokolu. 
+		Obsahuje metodu pro odeslání zprávy a možnost naslouchat příchozím zprávám za použití třídy \texttt{Observable} z knihovny RxJS.		
+		Třída využívá funkcí třídy \texttt{USBDriver}, jejíž instance je v konstruktora předána s pomocí techniky dependency injection\cite{prasanna2009dependency}.
+		
+		Třída \texttt{USBDriver} poskytuje jednoduché rozhraní pro komunikaci s připojeným USB zařízením.
+		Umožňuje odesílat data a poskytuje možnost naslouchání údalostem typu příjem dat, připojení a odpojení zařízení podobně jako třída \texttt{MidiAdapter}.
 
-	\section{Stavový model aplikace a knihovna NGXS}
+	\section{Stavový model aplikace a knihovna NGXS}\label{sec:NGXS}
 		Aplikace je rozdělena na klientskou a serverovou část. Jelikož hlavní logika ovládání hardwarového kontroleru a VST host aplikace
 		musí vykazovat co nejnižší odezvu, je třeba, aby byl dostupný aktuální stav aplikace v serverové části.
 		Zároveň však musí být stav přístupný i části klientské, aby mohly být reflektovány změny stavu iniciované přes
@@ -687,9 +699,63 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			aplikace a není ukládán do perzistentního úložistě.
 		
 	\section{OSC a VST host Bidule}
+		
+		Pro obousměrnou komunikaci serverové části vlastní aplikace s VST hostitelskou aplikací přes protokoly UDP a OSC je použita knihovna \texttt{node-osc}.
+		Tato knihovna umožňuje odesílat a přijímat OSC zprávy asynchronním způsobem. Příjem zpráv lze realizovat 
+		nasloucháním zprávám odpovídajícím zadanému vzoru. Pokud již daný příjem zpráv není relevantní, je třeba naslouchání zastavit,
+		aby nedocházelo ke zbytečnému čerpání systémových prostředků. Proto byla zavedena třída \texttt{OscService}, která 
+		umožňuje vytvořit k naslouchání instanci třídy \texttt{Observable} z frameworku RxJS. Třída též obsahuje 
+		mapu posledních hodnot pro danou OSC adresu. Lze tak použít i přístup \texttt{BehaviorSubject} z frameworku RxJS,
+		kdy lze naslouchat změnám hodnot, po inicializaci naslouchání je však odeslána úvodní hodnota.
+		
+		\subsection{Načítání projektů}
+		Program Bidule umožňuje načtení projektu ze zvoleného XML souboru odesláním OSC zprávy. Tímto způsobem
+		je ve vlastní aplikaci implementováno načítání projektů. Při otevření projektu dojde k odeslání příslušné
+		OSC zprávy do programu Bidule. Dále se v časovém intervalu 1s odesílá tzv. beacon zpráva vyžadující odpověď.
+		Pokud odpověď dorazí, znamená to, že je projekt již načtený. Pokud odpověď nedorazí, znamená to, že se projekt stále v programu Bidule načítá,
+		nebo že došlo k chybě. Při zavření projektu dojde v programu Bidule k načtení dodaného prázdného projektu.
 	
-		- asynchronni zpracovani
-		- komunikace s Bidule
+		\subsection{Parametry modulů}
+		V programu Bidule může představovat modul buďto některý z interních modulů, nebo VST plugin. Každý modul poskytuje seznam svých vlastních parametrů.
+		Program Bidule pro tyto parametry umožňuje jejich hodnoty měnit a naslouchat jejich změnám s pomocí protokolu OSC.
+		Zároveň pro každý modul zavádí obecné parametry, jako např. pracovní mód, pořadí vybraného presetu apod.
+		Číselné hodnoty parametrů jsou normalizovány na hodnotu 1.
+
+		\subsection{Zobrazení UI}
+		Přes protokol OSC lze v programu Bidule též zobrazit nebo schovat uživatelské rozhraní jakéhokoliv modulu a zpracovávat notifikace
+		o jeho zobrazení, resp. skrytí uživatelem. Ve vlastní aplikaci nejsou notifikace zpracovávány. Zobrazení uživatelského rozhraní modulu
+		probíhá na žádost uživatele, nebo při editaci konfigurace za použití tzv. funkce learn, kdy se konfigurace mění v závislosti
+		na akcích provedených přímo v prostředí modulu programu Bidule.
+
+		\subsection{Ovládání pracovního módu modulů}
+		V programu Bidule každý modul poskytuje obecný parametr představující svůj aktuální pracovní mód. Ten může nabývat následujících hodnot:
+		\begin{itemize}
+			\item \texttt{Processing} - modul je aktivní a zpracovává data.
+			\item \texttt{Bypass} - modul je aktivní a jsou do něj odesílána data, výstupní data jsou však ignorvána.
+			\item \texttt{Mute} - modul není aktivní a nevyužívá výpočetní výkon systému.
+		\end{itemize}
+		Jelikož je jedním z požadavků na systém optimalizace využití systémových prostředků, je třeba ovládat
+		pracovní mód modulu dynamicky. Děje se tak u modulů představujících VSTi pluginy, pro danou vrstvu 
+		tak může být současně aktivní pouze jeden virtuální hudební nástroj. V budoucnu je možné použít ovládání pracovního módu
+		i pro efekty podle předem zadaných pravidel pro hlavní mapování parametrů efektu k docílení další optimalizace
+		systémových prostředků.
+
+		\subsection{Volba presetů VST pluginů}
+		Pro každý modul program Bidule zavádí obecné parametry představující číslo a název aktuálního zvoleného presetu.
+		Tyto parametry jsou použité u jedné ze strategií inicializace presetu v rámci tzv. funkce learn, kdy dochází
+		ke změnám konfigurace v prostředí programu Bidule, a v rámci samotné inicializace presetu.
+
+		\subsection{Synchronizace vlastních parametrů modulů}
+		Přes protokol OSC lze také ovládat všechny vlastní parametry modulů v projektu programu Bidule.
+		K nastavení hodnot dochází při ovládání hardwarovým kontrolerem a inicializaci presetu.
+		Naslouchání změnám hodnot se využívá při prezentaci hodnot na hardwarovém kontroleru
+		a při aktivní tzv. learn funkci, kdy dochází ke změně konfigurace mapování parametrů v prostředí programu Bidule.
+
+		\subsection{Generování MIDI zpráv}
+		Jelikož je jednou ze strategií inicializace virtuálního nástroje odeslání MIDI zprávy typu program change,
+		byl do architektury projektu programu Bidule zahrnutý vlastní modul, který umožňuje přes OSC odeslat požadovanou MIDI zprávu
+		do libovolného virtuálního nástroje. Tento modul bude použitý také u vyslání obecných MIDI zpráv,
+		mezi které patří např. zprávy typu panic, které zajistí přerušení všech znějících tónů.
 	
 	\section{Kontroler}
 	
