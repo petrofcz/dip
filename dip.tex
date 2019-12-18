@@ -315,8 +315,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		V rámci aplikace bude možné zobrazit seznam dostupných nástrojů a efektů. Seznam nástrojů a efektů bude importován z konfigurace projektu Bidule.
 		U nástrojů a efektů bude možné vytvořit snímek všech parametrů pluginu, který bude považován za výchozí a bude načten při načtení projektu nebo po přepnutí zvuku. V rámci obou seznamů bude též možné otevřít uživatelské rozhraní VST pluginu, či zobrazit jeho dostupnost v jednotlivých vrstvách. Pro nástroje bude možnost definovat více pojmenovaných stránek mapování, pro efekt bude možné zadat právě jednu stránku mapování s volbou hlavního mapování.
 
-		Editor stránek mapování bude poskytovat možnost konfigurace mapování parametrů VST pluginu na enkodery kontroleru.
-		V rámci jedné stánky mapování bude možné ke každému enkoderu přiřadit právě jeden parametr VST pluginu a zadat tak až 8 různých mapování.
+		Editor stránek mapování bude poskytovat možnost konfigurace mapování parametrů VST pluginu na enkodéry kontroleru.
+		V rámci jedné stánky mapování bude možné ke každému enkodéru přiřadit právě jeden parametr VST pluginu a zadat tak až 8 různých mapování.
 		Při volbě parametru pluginu bude možné použít tzv. funkce learn, kdy lze ovládaný parametr vybrat přímo v uživatelském rozhraní pluginu.
 		Bude možné zadat název mapování.
 		Pro každé mapování budou k dispozici následující strategie:
@@ -324,7 +324,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\item\label{LinearMappingStrategy} \textbf{Lineární} - Tato strategie bude umožňovat určit lineární vztah mezi hodnotou enkodéru na hardwarovém kontroleru 
 			a hodnotou parametru příslušného pluginu. Bude možné zadat rozsah hodnot zobrazených na displeji, rozsah hodnot parametru VST pluginu, invertovat
 			průběh a zadat suffix pro zobrazení na displeji. Rozsah hodnot parametrů pluginu bude možné nastavovat i přes tzv. learn metodu, která 
-			umožňuje hodnoty zvolit přímo v prostředí VST pluginu. Na LED prstencích otočných enkodérů kontroleru bude hodnota parametru indikována lineárně na celém rozsahu enkodéru.
+			umožňuje hodnoty zvolit přímo v prostředí VST pluginu. Na LED prstencích rotačních enkodérů kontroleru bude hodnota parametru indikována lineárně na celém rozsahu enkodéru.
 			
 			\item \textbf{Lineární s položkovým zobrazením} - Jedná se o rozšíření lineární strategie s možností zadání položek, které
 			budou zobrazeny na displeji v závislosti na hodnotě parametru pluginu. Každá položka bude určena názvem a hraniční hodnotou parametru VST pluginu.
@@ -352,7 +352,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	
 		Za použití kontroleru bude možný výběr kategorie a stránkovaný výběr presetu v rámci dané kategorie. Zároveň bude k dispozici
 		historie posledních použitých presetů vč. jejich stavů pro každou vrstvu.
-		Hodnoty parametrů pluginů bude možné ovládat otočnými enkodéry kontroleru. Hodnoty budou indikovány LED prstencem enkodéru a grafickým výstupem na displeji podle konfigurace strategie mapování.
+		Hodnoty parametrů pluginů bude možné ovládat rotačními enkodéry kontroleru. Hodnoty budou indikovány LED prstencem enkodéru a grafickým výstupem na displeji podle konfigurace strategie mapování.
 		V rámci ovládání parametrů nástrojů bude k dispozici
 		zobrazení stránky mapování daného presetu. Pro ovládání parametrů efektů bude k dispozici agregované zobrazení, kde bude zobrazena
 		hlavní položka stránky mapování pro každý efekt, který je v dané vrstvě dostupný. Bude možné ovládat i všechny parametry efektu.
@@ -808,9 +808,36 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		udržovat přerušované podsvícení synchronní napříč celou aplikací. Třída podporuje čtyři stupně rychlosti blikání.
 		S pomocí třídy \texttt{EventEmitter} z frameworku RxJS lze naslouchat obdélníkovému signálu představujícímu stav podsvícení podle zvoleného stupně frekvence přerušení.
 
-		\subsection{Display kontroleru}
+		\subsection{Displej kontroleru}
+		Příkazy pro ovládání displeje využívají MIDI zpráv typu SysEx. Je možné smazat celý obsah displeje a 
+		vypsat ASCII řetězec na pozici určené dvojicí souřadnice. API třídy \texttt{Display} pro ovládání displeje tyto funkce poskytuje.
+		Tato vrstva též zajišťuje možnost vypsat text do příslušné buňky s automatickým zarovnáním, nebo zkrácením řetězců.
+		Veškeré operace lze provést okamžitě, nebo je provádět pouze lokálně a poté odeslat do zařízení celý obsah displeje.
+		Pro tuto optimalizace třída zahrnuje buffer obsahující aktuální obsah celého displeje.
 
-		\subsection{Otočné enkodery kontroleru}
+		\subsection{Rotační enkodéry kontroleru}
+		Hardwarový kontroler poskytuje tři druhy otočných ovladačů. Tzv. nekonečné knoby (rotační enkodéry obklopené
+		prstencem LED), standardní potenciometry a rotační enkodér bez prstence LED pro hlavní navigaci.
+		Všechny otočné ovladače podporují vyslaní signálu při dotyku, resp. jeho přerušení. 
+		
+		U nekonečných knobů lze nastavit mód zobrazení hodnoty na LED prstenci (např. zobrazení bodem, kruhovou výsečí).
+		Při otočení zařízení odešle MIDI zprávu určující směr a rychlost pohybu.
+		
+		Rotační enkodér pro	hlavní navigaci lze stisknout a odeslat tak příslušnou MIDI zprávu. Při jeho otočení
+		zařízení odešle MIDI zprávu podobně jako u rotačních enkodérů s LED prstencem.
+		
+		U klasických potencimetrů zařízení odesílá při změně hodnoty aktuální hodnotu vyjádřenou 7b.
+		
+		Třída \texttt{Knobs} zastupuje skupinu nekonečných knobů s LED prstencem. Umožňuje pro každý knob změnit mód zobrazení hodnoty a
+		nastavit hodnotu indikovanou LED prstencem. Též poskytuje s pomocí třídy \texttt{EventEmitter} z frameworku RxJS události, kterým lze naslouchat.
+		Třída \texttt{KnobEvent} představuje rodičovskou třídu pro všechny události knobů. Třída \texttt{RotationKnobEvent} jí dědí a přidává informaci
+		o směru a rychlosti otočení. Naslouchat lze událostem dotyku, uvolnení dotyku a otočení.
+		
+		\subsection{Architektura}
+		Třídy implementující jednotlivé části vrstvy jsou použity ve větších celcích určených rozmístením prvků na hardwarovém kontroleru.
+		Např. třída \linebreak	\texttt{NavigationRegionDriver}, která představuje množinu ovládacích prvků určených k navigaci, využívá dvě instance třídy \texttt{ButtonGroup}.
+		Třída \texttt{DisplayRegionDriver} pro ovládní prvků v oblasti displeje obsahuje instance tříd \texttt{Display}, \texttt{Knobs} a \texttt{ButtonMatrix}.
+		Tyto celky jsou použity v implementaci logiky uživatelského rozhraní hardwarového kontroleru.
 		
 	\section{Uživatelské rozhraní hardwarového kontroleru}
 	
@@ -849,6 +876,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	\item[CRUD] Create, Read, Update, Delete
 	\item[IPC] Inter process communication
 	\item[JSON] JavaScript Object Notation
+	\item[ASCII] American Standard Code for Information Interchange
 \end{description}
 
 
