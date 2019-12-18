@@ -105,8 +105,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Zde budeme uvažovat pouze skupinu nástrojů, která je tomuto účelu nejblíže, tzv. stage piana.
 			
 			Tyto nástroje často poskytují obsáhlou banku zvuků, propracované uživatelské rozhraní a velmi vysokou stabilitu.
-			Pokročilejší modely disponují možností přidat nové zvuky v proprietárním formátu, které může uživatel vytvořit za pomocí speciálního nástroje,
-			nebo je získat z online databáze. Některé modely navíc umožňují připojit další klaviaturu přes MIDI rozhraní, to ovšem přináší jistá omezení,
+			Pokročilejší modely disponují možností přidat nové zvuky v proprietárním formátu, které může uživatel vytvořit za pomocí speciálního nástroje nebo je získat z online databáze. Některé modely navíc umožňují připojit další klaviaturu přes MIDI rozhraní, to ovšem přináší jistá omezení,
 			například absenci možnosti použít zvuk stejného typu na obou klaviaturách současně, jelikož zařízení disponuje pouze jedním zvukovým modulem
 			pro daný typ zvuku.
 			Zároveň nástroje poskytují bohaté možnosti nastavení běžných parametrů, jako jsou např. hlasitost, transpozice, rozdělení klaviatury do zón,
@@ -129,7 +128,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Ikdyž je prostředí typu DAW primárně určeno pro studiovou práci, může být vhodné i pro použití při živých vystoupeních.
 			Jedná se však převážně o takový typ vystoupení, kdy má umělec předem pečlivě připravené celé představení.
 			Flexibilita prostředí při samotném vystoupení je pak nízká.
-			Lze sice docílit i flexibilního chování, nezbytná je však interakce uživatele s počítačem, nebo tabletem. Při živém vystoupení
+			Lze sice docílit i flexibilního chování, nezbytná je však interakce uživatele s počítačem nebo tabletem. Při živém vystoupení
 			je však taková interakce značně nevhodná, jelikož neposkytuje dostatečnou rychlost a preciznost ovládání.
 			Navíc lze použít pouze omezené množství přednastavených zvuků, jelikož pro každý zvuk musí být zavedena zvláštní instance
 			virtuálního nástroje, která čerpá systémové prostředky.
@@ -203,7 +202,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			
 			VST API umožňuje pluginům generovat zvukovou vlnu na základě konfigurovatelných
 			parametrů a vstupních dat, jako jsou MIDI události, či zvukový signál.
-			Konfigurace parametrů virtuálního nástroje probíhá přes vlastní uživatelské rozhraní pluginu, nebo přes hostitelskou aplikaci.
+			Konfigurace parametrů virtuálního nástroje probíhá přes vlastní uživatelské rozhraní pluginu nebo přes hostitelskou aplikaci.
 			Každý VST plugin poskytuje hostitelské aplikaci výčet dostupných parametrů a jejich vlastnosti.
 			Zároveň je připravena i podpora tzv. presetů, které reflektují stav pluginu. Presety lze ovládat též prostřednictvím
 			hostitelské aplikace.
@@ -314,7 +313,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Vrstvou se rozumí skupina VST pluginů definovaná v projektu programu Bidule. Manuálem se rozumí skupina vrstev a představuje připojenou klaviaturu.
 
 		V rámci aplikace bude možné zobrazit seznam dostupných nástrojů a efektů. Seznam nástrojů a efektů bude importován z konfigurace projektu Bidule.
-		U nástrojů a efektů bude možné vytvořit snímek všech parametrů pluginu, který bude považován za výchozí a bude načten při načtení projektu, nebo po přepnutí zvuku. V rámci obou seznamů bude též možné otevřít uživatelské rozhraní VST pluginu, či zobrazit jeho dostupnost v jednotlivých vrstvách. Pro nástroje bude možnost definovat více pojmenovaných stránek mapování, pro efekt bude možné zadat právě jednu stránku mapování s volbou hlavního mapování.
+		U nástrojů a efektů bude možné vytvořit snímek všech parametrů pluginu, který bude považován za výchozí a bude načten při načtení projektu nebo po přepnutí zvuku. V rámci obou seznamů bude též možné otevřít uživatelské rozhraní VST pluginu, či zobrazit jeho dostupnost v jednotlivých vrstvách. Pro nástroje bude možnost definovat více pojmenovaných stránek mapování, pro efekt bude možné zadat právě jednu stránku mapování s volbou hlavního mapování.
 
 		Editor stránek mapování bude poskytovat možnost konfigurace mapování parametrů VST pluginu na enkodery kontroleru.
 		V rámci jedné stánky mapování bude možné ke každému enkoderu přiřadit právě jeden parametr VST pluginu a zadat tak až 8 různých mapování.
@@ -629,8 +628,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		částí modelu stavu aplikace.
 		
 		\subsection{Synchronizace přes IPC}
-			Pro klientskou i serverovou část byly implementovány třídy \texttt{IpcActionTransmitterPlugin} a 
-			\texttt{IpcActionReceiver}. Třída \texttt{IpcActionTransmitterPlugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií  akcí vyvolaných přes NGXS framework	druhé straně aplikace. K příjmu zprávy slouží třída \texttt{IpcActionReceiver}, která akci předá
+			Pro klientskou i serverovou část byly implementovány třídy \texttt{IpcActionReceiver} a 
+			\texttt{IpcActionTransmitterPlugin}. Třída \texttt{IpcActionTransmitterPlugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií  akcí vyvolaných přes NGXS framework	druhé straně aplikace. K příjmu zprávy slouží třída \texttt{IpcActionReceiver}, která akci předá
 			NGXS frameworku tak, že simuluje lokální vyvolání dané akce. Zprávy jsou serializovány do formátu JSON a k jejich přenosu dochází
 			za použití IPC API frameworku Electron.
 		
@@ -712,19 +711,18 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Program Bidule umožňuje načtení projektu ze zvoleného XML souboru odesláním OSC zprávy. Tímto způsobem
 		je ve vlastní aplikaci implementováno načítání projektů. Při otevření projektu dojde k odeslání příslušné
 		OSC zprávy do programu Bidule. Dále se v časovém intervalu 1s odesílá tzv. beacon zpráva vyžadující odpověď.
-		Pokud odpověď dorazí, znamená to, že je projekt již načtený. Pokud odpověď nedorazí, znamená to, že se projekt stále v programu Bidule načítá,
-		nebo že došlo k chybě. Při zavření projektu dojde v programu Bidule k načtení dodaného prázdného projektu.
+		Pokud odpověď dorazí, znamená to, že je projekt již načtený. Pokud odpověď nedorazí, znamená to, že se projekt stále v programu Bidule načítá,	nebo že došlo k chybě. Při zavření projektu dojde v programu Bidule k načtení dodaného prázdného projektu.
 	
 		\subsection{Parametry modulů}
-		V programu Bidule může představovat modul buďto některý z interních modulů, nebo VST plugin. Každý modul poskytuje seznam svých vlastních parametrů.
+		V programu Bidule může představovat modul buďto některý z interních modulů nebo VST plugin. Každý modul poskytuje seznam svých vlastních parametrů.
 		Program Bidule pro tyto parametry umožňuje jejich hodnoty měnit a naslouchat jejich změnám s pomocí protokolu OSC.
 		Zároveň pro každý modul zavádí obecné parametry, jako např. pracovní mód, pořadí vybraného presetu apod.
 		Číselné hodnoty parametrů jsou normalizovány na hodnotu 1.
 
-		\subsection{Zobrazení UI}
+		\subsection{Zobrazení UI modulu}
 		Přes protokol OSC lze v programu Bidule též zobrazit nebo schovat uživatelské rozhraní jakéhokoliv modulu a zpracovávat notifikace
 		o jeho zobrazení, resp. skrytí uživatelem. Ve vlastní aplikaci nejsou notifikace zpracovávány. Zobrazení uživatelského rozhraní modulu
-		probíhá na žádost uživatele, nebo při editaci konfigurace za použití tzv. funkce learn, kdy se konfigurace mění v závislosti
+		probíhá na žádost uživatele nebo při editaci konfigurace za použití tzv. funkce learn, kdy se konfigurace mění v závislosti
 		na akcích provedených přímo v prostředí modulu programu Bidule.
 
 		\subsection{Ovládání pracovního módu modulů}
@@ -757,18 +755,69 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		do libovolného virtuálního nástroje. Tento modul bude použitý také u vyslání obecných MIDI zpráv,
 		mezi které patří např. zprávy typu panic, které zajistí přerušení všech znějících tónů.
 	
-	\section{Kontroler}
+	\section{Automap a hardwarový kontroler}
+		Pro podporu komunikace s hardwarovým kontrolerem přes protokol Automap byla vytvřena speciální vrstva.
+		V budoucnu je možno tuto vrstvu nahradit jinými implementacemi pro podporu dalších ovládacích zařízení.
+		Vrstva vužívá třídu \texttt{MidiAdapter} pro přenos zpráv podle protokolu Automap.
+		V následujících podkapitolách jsou popsány jednotlivé části této vrstvy, která zajišťuje
+		vstupně-výstupní operace s připojeným hardwarovým kontrolerem. 
+
+		\subsection{Inicializace zařízení}
+		Po připojení zařízení protokol Automap přikazuje provést tzv. handshake, tedy výměnu zpráv
+		pro zahájení komunikace. Po připojení hardwarového kontroleru dojde k automatickému odeslání zprávy do zařízení
+		a systém čeká na příjem potvrzující zprávy. 
+		Obě zprávy jsou typu SysEx a nesou informaci o verzi protokolu a další konfiguraci zařízení.
+		
+		\subsection{Tlačítka kontroleru}
+		Protokol Automap umožňuje přes MIDI zprávy typu CC předávat informace o stisknutí tlačítka
+		hardwarového kontroleru. Zároveň poskytuje možnost nastavit stav LED podsvícení příslušného tlačítka.
+		Jelikož v samotném hardwarovém kontroleru není k dispozici žádná další logika, bylo potřeba
+		implementovat rozšířenou logiku chování tlačítek v aplikaci.
+		
+		Samotná tlačítka uživatelského rozhraní kontroleru lze rozdělit do logických celků.
+		Pro reprezentaci takového celku v kódu vznikla třída \texttt{ButtonGroup}. Tato třída
+		obsahuje metody pro nastavení stavu jednotlivých LED a všech LED v rámci celku.
+		Zároveň za použití třídy \texttt{EventEmitter}, která implementuje rozhraní \texttt{Observable} 
+		z frameworku RxJS, poskytuje možnost naslouchání na událost stisku tlačítka reprezentované třídou \texttt{ButtonClickEvent}.
+		Tlačítka jsou identifikována číslem stanoveným protokolem Automap, které je při komunikaci přenášeno
+		v MIDI zprávě typu CC. Třída \texttt{ButtonGroup} v konstruktoru přijímá seznam identifikátorů tlačítek
+		v daném celku. Zároveň poskytuje i možnost nastavení příznaku pro ignorování stisknutí.
+		Tento příznak lze zadat pro jednotlivá tlačítka zvlášť nebo hromadně pro všechna tlačítka v rámci skupiny.
+		Pokud je stisknuto tlačítko, které nemá nastavený příznak ignorování stisku, dojde zároveň k jeho podsvícení dokud není tlačítko uvolněno.
+		
+		Pro instanci třídy typu \texttt{ButtonGroup} lze též nastavit objekt impelmentující rozhraní \texttt{ClickHandlerInterface}, který reaguje
+		na stisknutí, resp. uvolnění tlačítka. Nastavení lze provést globálně pro celou skupinu tlačítek nebo pro každé tlačítko zvlášť.
+		Rozhraní \texttt{ClickHandlerInterface} umožňuje třídě vyvolat vlastní událost představující stisknutí tlačítka.
+		Vlastní událost musí splňovat rozhraní třídy \texttt{ButtonClickEvent}. Pro zpracování vstupu definuje rozhraní metody,	které jsou zavolány po stisknutí, nebo uvolnění tlačítka.
+		Jako výchozí implementace rozhraní \texttt{ClickHandlerInterface} je při vytváření třídy \texttt{ButtonGroup} inicializována instance třídy 
+		\texttt{SimpleClickHandler}, která zanedbává informace o uvolnění tlačítka a vyvolává událost představující stisknutí tlačítka 
+		ihned po fyzickém stisknutí tlačítka. 
+		Další implementací rozhraní \texttt{ClickHandlerInterface} je třída \texttt{MultiClickHandler}, která zajišťuje zpracování vícenásobného stisknutí tlačítka. 
+		V rámci instance lze nastavit nejvyšší počet stisknutí tlačítka a maximální časový rozestup mezi jednotlivými stisky tlačítka, než dojde k vyvolání události stisknutí tlačítka. 
+		Událost \\\texttt{ButtonMultiClickEvent} poté nese kromě identifikátoru stisknutého tlačítka i informaci o počtu stisknutí tlačítka.
+		V budoucnu je možné implementovat např. třídu pro zpracování podržení tlačítka, kde budou zohledněny i vstupní události fyzického uvolnění tlačítka.
+		
+		Jelikož mají logické celky tlačítek často pravoúhlý tvar, kde je výhodné použít adresaci pomocí
+		kartézské soustavy souřadnic, byla pro tento účel implementována třída \texttt{ButtonMatrix} využívající
+		s pomocí kompozice třídu \texttt{ButtonGroup}. V konstruktoru je navíc vyžadována informace o rozměrech mřížky a identifikátor prvního tlačítka. 
+		Identifikátory dalších tlačítek jsou vypočítány automaticky podle číslování plynoucího z protokolu Automap.
+		Události stisknutí tlačítka v mřížce, kterým lze naslouchat, obsahují informaci o souřadnicích tlačítka. Reprezentuje je třída \texttt{ButtonMatrixEvent},
+		jejíž rozhraní vychází z třídy \texttt{ButtonClickEvent}. K dispozici je i vazba na původní událost typu \texttt{ButtonClickEvent}, která je řešena pomocí kompozice.
+		
+		Pro podporu přerušovaného podsvícení tlačítek byla zavedena třída \\\texttt{InterruptionClock}. Díky této třídě lze 
+		udržovat přerušované podsvícení synchronní napříč celou aplikací. Třída podporuje čtyři stupně rychlosti blikání.
+		S pomocí třídy \texttt{EventEmitter} z frameworku RxJS lze naslouchat obdélníkovému signálu představujícímu stav podsvícení podle zvoleného stupně frekvence přerušení.
+
+		\subsection{Display kontroleru}
+
+		\subsection{Otočné enkodery kontroleru}
+		
+	\section{Uživatelské rozhraní hardwarového kontroleru}
 	
-		- abstrakce
-		- asynchronni
-		- model pro tlacitka
-		- model pro display
-		- model pro dalsi prvky
-	
-	\section{Desktop UI}
+	\section{Desktopové uživatelské rozhraní}
 		- angular material
 		
-	\section{Data}
+	\section{Perzistence dat}
 
 		- import dat z bidule
 		- ukladani dat
