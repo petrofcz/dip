@@ -510,7 +510,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\label{fig:ControllerUI-EffectDetail}
 		\end{sidewaysfigure}
 	
-		\subsection{Hlavní navigace}
+		\subsection{Hlavní navigace}\label{sec:controller-navigation-design}
 			Pro hlavní navigaci mezi obrazovkami kontroleru byla zvolena dvojice tlačítek umístěných nalevo od displeje.
 			Jednoduchým stisknutím spodního tlačítka dojde k načtení obrazovky ovládání parametrů nástroje.
 			Pokud uživatel stiskne vrchní tlačítko, je zobrazena obrazovka procházení presetů.
@@ -694,8 +694,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{PresetSessionState}
 			Tento stav pro každou vrstvu zvlášť uchovává informace o aktuálně načteném presetu.
 			Mezi tyto informace patří např. historie naposledy použitých presetů a příznaky pro 
-			ovládání úpravy aktuálního presetu. Stav je sdílen mezi klientskou a serverovou částí
-			aplikace a není ukládán do perzistentního úložistě.
+			ovládání úpravy aktuálního presetu. V modelu stavu je obsažena logika pro správu historie naposledy použitých presetů.
+			Stav je sdílen mezi klientskou a serverovou částí aplikace a není ukládán do perzistentního úložistě.
 		
 	\section{OSC a VST host Bidule}
 		
@@ -755,7 +755,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		do libovolného virtuálního nástroje. Tento modul bude použitý také u vyslání obecných MIDI zpráv,
 		mezi které patří např. zprávy typu panic, které zajistí přerušení všech znějících tónů.
 	
-	\section{Automap a hardwarový kontroler}
+	\section{Automap a hardwarový kontroler}\label{sec:automap-hw-controller}
 		Pro podporu komunikace s hardwarovým kontrolerem přes protokol Automap byla vytvřena speciální vrstva.
 		V budoucnu je možno tuto vrstvu nahradit jinými implementacemi pro podporu dalších ovládacích zařízení.
 		Vrstva vužívá třídu \texttt{MidiAdapter} pro přenos zpráv podle protokolu Automap.
@@ -840,6 +840,94 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Tyto celky jsou použity v implementaci logiky uživatelského rozhraní hardwarového kontroleru.
 		
 	\section{Uživatelské rozhraní hardwarového kontroleru}
+		Jednotlivé části vrstvy uživatelského rozhraní hardwarového kontroleru jsou orchestrovány s pomocí třídy \texttt{KeyboardRouter}.
+		Ta zároveň slouží pro navigaci v rámci uživatelského rozhraní kontroleru. Pro tento účel poskytuje metodu \texttt{navigate}, která
+		způsobí načtení požadovaného stavu navigace. Stav navigace je vyjádřen řetězcem, jednotlivé stavy nemůžou obsahovat žádná metadata. Ta je případně
+		vhoné přenášet ve vlastnosti \texttt{KeyboardRoute} stavu \texttt{SessionState} s využitím knihovny NGXS. Třída \\\texttt{KeyboardRouter} obsahuje referenci na všechny komponenty řídící jednotlivé 
+		části uživatelského rozhraní hardwarového kontroleru. Podle aktuálního stavu navigace určuje, které komponenty jsou právě aktivní. 
+		Každá komponenta pro řízení části uživatelského rozhraní kontroleru musí implementovat rozhraní \texttt{MortalInterface}, které obsahuje deklaraci metody \\\texttt{onInit} a \\\texttt{onDestroy}.
+		Z pohledu návrhového vzoru MVC\cite{reenskaug1979original} se chovají takové komponenty dohromady jako view a controller. V následujících podkapitolách
+		budou diskutovány jednotlivé komponenty pro řízení části uživatelského rozhraní.
+		
+		\subsection{Komponenty pro ovlání oblasti displeje}\label{sec:display-area-components}
+			Jelikož lze na displeji dobře indikovat aktuální chování přidružených prvků, oblast displeje může být použita pro větší množství obrazovek.
+			V této podkapitole budou diskutovány komponenty pro řízení oblasti displeje. Všechny komponenty pracují s vrstvou poskytující vstupně-výstupní operace s připojeným hardwarovým kontrolerem (viz kapitolu \ref{sec:automap-hw-controller}). Využívají pouze část vrstvy, která poskytuje ovládání prvků oblasti displeje, tedy třídu \texttt{DisplayRegionDriver}.
+					
+			\subsubsection{Třída ParamMappingContoller}
+				Tato komponenta ovládá pouze jeden řádek oblasti displeje a měla by být tedy použita v rámci komponenty představující celou obrazovku.
+				Je využitá v třídách \texttt{InstrumentDetailController}, \texttt{EffectOverviewController} a \texttt{EffectDetailController} implementující obrazovky C2 - C4 (viz kapitoly \ref{sec:C2}, \ref{sec:C3}, \ref{sec:C4}). Zajišťuje chování pro ovládání a indikaci parametrů VST pluginů. Aktuálně ovládané parametry a jejich mapování načítá ze stavu \texttt{ParamMappingPageState}.
+				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích okolo otočných enkoderů a indikuje hodnotu na LED prstenci podle strategie mapování. Též
+				reaguje na události otočného enkoderu. Při jeho otočení podle strategie mapování vyvolá akci aktualizace hodnoty parametru VST pluginu.
+				Zobrazení na displeji poskytuje standardně název ovládaného parametru, pokud však není nastavený příznak pro trvalé 
+				zobrazení hodnot.
+				Aktuální hodnota ovládaného parametru je zobrazena jen pokud dojde k její změně nebo pokud se uživatel dotkne příslušného otočného enkoderu.
+				Formát zobrazení hodnoty na displeji je určen stragetií mapování.
+				Hodnota parametru je zobrazena jen po určitý čas, poté se opět zobrazení vrátí na název ovládaného parametru. 
+				Toto chování je zajištěno netriviální logikou vyjádřenou za použití reaktivního programování a knihovny RxJS.
+
+			\subsection{ParamMappingLoaderService}
+				Třída \texttt{ParamMappingLoaderService} zajišťuje automatickou aktualizaci stavu \texttt{ParamMappingPageState} při změně aktuální vrstvy nebo presetu.
+				Pokud je zvolena vrstva i preset, načte stránku mapování parametrů nástroje danou v presetu, jinak načte prázdnou stránku mapování.
+				
+			\subsection{Třída LastPresetsController}
+				Podobně jako u třídy \texttt{ParamMappingController} je ovládán pouze jeden řádek oblasti displeje. Na řádku jsou zobrazeny
+				záznamy historie posledních použitých presetů a aktuální preset. Při stisknutí příslušného tlačítka dojde k vyvolání 
+				akce \texttt{SelectPresetAction} určující, který preset má být aktuálně načten. Třída načítá data ze stavu \texttt{PresetSessionState}
+				pomocí metody \texttt{getCurrentHistory}, jejíž výstup je závislý na aktuální vrstvě. Při změně aktivní vrstvy tedy dojde
+				k zobrazení záznamů historie pro danou vrstvu.
+							
+			\subsection{Třída EffectSwitchController}
+				Pro přepínání ovládaných efektů byla vytvořena třída \texttt{EffectSwitchController}. 
+				Ovládá pouze jeden řádek oblasti displeje a je používaná třídami \texttt{EffectOverviewController} a \texttt{EffectDetailController}. Data načítá ze stavů \texttt{SessionState}, \texttt{ManualState} a \texttt{VstState}.
+				Poskytuje uživateli seznam efektů dostupných pro aktuálně zvolený kontext, který zahrnuje aktuální vrstvu a konfiguraci
+				zobrazení efektů, tedy umístění efektů (vstup nebo výstup) a příznak pro ovládání globálních efektů.
+				Při stisknutí tlačítka dojde k vyvolání vlastní události volby efektu s použitím třídy \texttt{EventEmitter} z frameworku RxJS. Aktivní efekt je možné nastavit s použití metody \texttt{SetActiveEffect}, která interně využívá
+				třídu \texttt{BehaviorSubject} z frameworku RxJS.			
+							
+			\subsubsection{Třída InstrumentDetailController}
+				Tato třída vužívá v kombinaci tříd \texttt{ParamMappingController} a \texttt{LastPresetsController} tak, aby bylo dosaženo kýženého chování (viz kapitolu \ref{sec:C2}).
+				Aktualizace stránky mapování parametrů nástroje je implementována ve třídě \texttt{ParamMappingLoaderService}.
+				
+			\subsubsection{Třída EffectOverviewController}
+				Obrazovka souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}) je implementována třídou \texttt{EffectOverviewController},
+				která využívá jako podkomponenty třídy \texttt{EffectSwitchController} a \texttt{ParamMappingContoller}.
+				Pokud je vyvolána událost volby efektu instancí třídy \texttt{EffectSwitchController}, dojde k nastavení příslušného stavu navigace v rámci hardwarového kontroleru a je načtena obrazovka detailu efektu (viz kapitolu \ref{sec:C4}).
+				U instance třídy \texttt{ParamMappingController} je nastaven příznak pro trvalé zobrazení hodnoty parametru efektu.
+				Aktualizace stránky mapování parametrů probíhá automaticky při změně konfigurace dostupných efektů vyvoláním akce \texttt{LoadParamMappingPageAction}. U každého dostupného efektu je vybráno hlavní mapování a z těchto mapování
+				je poté sestrojena výsledná stránka mapování. 			
+				
+			\subsection{Třída EffectDetailController}
+				Podobně jako u třídy \texttt{EffectOverviewController} je u této třídy využita komponenta \texttt{EffectSwitchController},
+				s pomocí které je též indikován stav aktuálně ovládaného efektu. Událost volby efektu je buď 
+				reflektována změnou stavu určením nového aktivního efektu, nebo je uživatel přesměrován na obrazovku souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
+				Zároveň je třídou \texttt{EffectDetailController} využita i komponenta \texttt{EffectOverviewController} poskytující
+				stránku mapování určenou aktuálně ovládaným efektem. Při změně části stavu určující aktuálně ovládaný efekt
+				je vyvolána akce načtení stránky mapování parametrů z daného efektu.
+		
+			\subsection{Třída PresetController}
+				Třída PresetController představuje implementaci obrazovky C1 (viz kapitolu \ref{sec:C1}). 
+				Zajišťuje procházení kategorií presetů a volbu a indikaci aktuálního presetu.
+				Data získává prostřednictvím stavů \texttt{SessionState}, \texttt{PresetCategoryState}, \texttt{PresetState} a \texttt{PresetSessionState}.
+				Aktuální zvolená kategorie je obousměrně synchronizována s desktopovým uživatelským rozhraním aplikace.
+				Pro možnost stránkování je využitá třída pro zpracování vícenásobného stisku tlačítka \texttt{MultiClickHandler}.
+				Netriviální logika je implementována za použití reaktivního programování ve frameworku RxJS.
+		
+			\subsubsection{Třída EmptyController}
+				Instance této komponenty je načtena po spuštění aplikace nebo připojení hardwarového kontroleru k systému. Nereaguje na žádné vstupy od uživatele, na displeji zobrazí informativní hlášku.
+						
+		
+		\subsection{Ostatní komponenty}
+			\subsubsection{Třída LayerController}
+				Třída \texttt{LayerController} implementuje chování čtveřice tlačítek nalevo pod displejem. Slouží k určování a indikaci aktuálně zvoleného manuálu a vrstvy.
+				Tlačítka představují jednotlivé manuály. Rychlost blikání tlačítek značí pořadí vrstvy s využitím třídy \\\texttt{InterruptionClock}. Pro nastavení
+				aktuálního manuálu a vrstvy je využita třída pro zpracování událostí stisknutí tlačítka \\\texttt{MultiClickHandler}.
+				V případech, kdy kvůli omezením není možné přepínat aktuální vrstvu (např. při editaci presetu) je potlačeno veškeré ovládání a indikace aktuální vrstvy.
+				Komponenta je globální a její instance je tedy aktivní po celou dobu běhu aplikace.
+			
+			\subsubsection{Třída DisplayModeController}
+				K přepínání obrazovek, tedy určení aktivní komponenty ovládající oblast displeje, slouží třída \texttt{DisplayModeController}. Dvojicí tlačítek
+				umístěných nalevo od displeje lze zobrazit až 6 možných obrazovek (viz kapitolu \ref{sec:display-area-components}). Chování tlačítek využívá
+				tříd \texttt{MultiClickHandler} a \texttt{InterruptionClock} tak, aby splnily požadované chování (viz kapitolu \ref{sec:controller-navigation-design}).
 	
 	\section{Desktopové uživatelské rozhraní}
 		- angular material
@@ -877,6 +965,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	\item[IPC] Inter process communication
 	\item[JSON] JavaScript Object Notation
 	\item[ASCII] American Standard Code for Information Interchange
+	\item[MVC] Model, view, controller
 \end{description}
 
 
