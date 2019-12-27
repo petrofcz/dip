@@ -930,7 +930,121 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				tříd \texttt{MultiClickHandler} a \texttt{InterruptionClock} tak, aby splnily požadované chování (viz kapitolu \ref{sec:controller-navigation-design}).
 	
 	\section{Desktopové uživatelské rozhraní}
-		- angular material
+		Pro desktopové uživatelské rozhraní byl zvolen framework Angular Material, který přináší běžné prvky
+		uživatelského rozhraní pro jejich použití ve frameworku Angular. Aplikace vužívá prvky pro rozvržení
+		částí UI, formuláře, tlačítka, seznamy a další. Stav desktopového uživatelského rozhraní je do značné míry
+		nezávislý na stavu uživatelského rozhraní hardwarového kontroleru. Výjimky budou popsány v následujících podkapitolách, které 
+		popisují jednotlivé části desktopového uživatelského rozhraní.
+		
+		\subsection{Rozdělení do modulů}
+			Podle doporučeného návrhu architektury je desktopová část aplikace rozdělena do modulů, které řeší jednotlivé části problémové domény\cite{ng-modules}.
+			V rámci modulu lze např. určit konfiguraci pro lokální navigaci, zavádět znovupoužitelné komponenty a implementovat vlastní direktivy pro šablony.
+			Kromě kořenového modulu \texttt{AppModule} aplikace obsahuje následující klíčové moduly:
+			\begin{itemize}
+				\item \texttt{HomeModule}
+				\item \texttt{MaterialModule}
+				\item \texttt{SharedModule}
+				\item \texttt{ParamMappingModule}
+				\item \texttt{VstModule}
+				\item \texttt{LayoutModule}
+				\item \texttt{InstrumentModule}
+				\item \texttt{EffectModule}
+				\item \texttt{PresetModule}
+			\end{itemize}
+		
+		\subsection{Navigace}
+			Pro účely navigace v rámci desktopového uživatelského rozhraní využívá aplikace nativního přístupu poskytovaného
+			frameworkem Angular (s využitím modulu \texttt{RouterModule}).
+			Knihovna \texttt{@ngxs/router-plugin} pak zajišťuje synchronizaci aktuálního stavu navigace s částí stavu v rámci knihovny NGXS.
+			
+			V modulu \texttt{AppRoutingModule} pro zajištění hlavní navigace v rámci kořenového modulu jsou definovány následující stavy navigace identifikované prefixem cesty ve formě řetězce. Jednotlivé moduly pak řeší svojí lokální navigaci zvlášť.
+			\begin{itemize}
+				\item \texttt{''} - modul \texttt{HomeModule} pro zobrazení úvodní obrazovky
+				\item \texttt{'layouts'} - modul \texttt{LayoutModule} zajišťující správu uložených projektů programu Bidule
+				\item \texttt{'instruments'} - modul \texttt{InstrumentModule} pro práci s virtuálními hudebními nástroji
+				\item \texttt{'effects'} - modul \texttt{EffectModule} pro práci s virtuálními efekty
+				\item \texttt{'presets'} - modul \texttt{PresetModule} pro správu uložených presetů
+				\item \texttt{'**'} - tzv. fallback, který zajistí zobrazení chybové obrazovky pro neplatné cesty navigace.
+			\end{itemize}		
+		
+			Jednotlivé stavy navigace mohou být aktivovány pouze za určitých omezení, např. pokud je načtený projekt programu Bidule. 
+			Omezení jsou vyjádřena tzv. guardy, které představují např. třídy \texttt{NoLayoutGuard} a \texttt{LayoutGuard} z modulu \texttt{LayoutModule}.
+			
+			Ke změně stavu navigace uživatelem slouží vertikální menu definované globálně v rámci hlavní komponenty \texttt{AppComponent} z modulu \texttt{AppModule}. Pro vykreslené menu je použita komponenta \texttt{MatSidenav} z frameworku Angular Material.
+			
+			Navigace v rámci uživatelského rozhraní harwdarového kontroleru je do značné míry nezávislá na stavu navigace desktopového uživatelského rozhraní aplikace.
+			Výjimkou je případ editace některých částí konfigurace projektu, kdy v rámci uživatelského rozhraní hardwarového kontroleru dochází k nastavení stavu navigace a odepření možnosti jeho změny.
+			
+		\subsection{HomeModule}
+			V tomto modulu se nachází implementace komponenty pro zobrazení úvodní obrazovky aplikace. Komponenta \texttt{HomeComponent}
+			neobsahuje žádnou logiku, obsažená je pouze jednoduchá šablona. Obrazovka je načtena pouze po inicializaci aplikace.
+			
+		\subsection{MaterialModule}
+			Tento jednoduchý modul je importován všemi moduly, které pracují s knihovnou Angular Material.
+			Exportuje veškeré prvky knihovny Angular Material, které jsou použity napříč celou aplikací.
+			
+		\subsection{SharedModule}
+			V modulu \texttt{SharedModule} jsou implementovány veškeré komponenty, které mohou být použity napříč celou aplikací.
+			Obsahuje např. komponentu pro zobrazení chybového stavu, obecný dialog pro zadání jména (třída \texttt{NamedEntityDialogComponent}) a direktivu pro potvrzení libovolné akce uživatelem (třída \texttt{ConfirmationDirective}).
+			
+		\subsection{ParamMappingModule}
+			Tento modul poskytuje znovupoužitelnou komponentu \texttt{ParamMappingPageComponent} pro správu stránek mapování parametrů VST pluginů. Ta umožňuje přidávat, odebírat a upravovat jednotlivé položky stránky mapování. Pro zadávání názvu položky
+			využívá komponentu \texttt{NamedEntityDialogomponent} definovanou v modulu \texttt{SharedModule}.			
+			Pro každou položku umožňuje zvolit strategii mapování. Rozhraní \texttt{AbstractParamMappingStrategyComponent} představuje API pro komponenty umožňující konfiguraci konkrétního mapování. Díky této abstrakci lze v budoucnu přidávat jednoduše další 
+			strategie, aniž by bylo potřeba upravovat již existující kód. Návrh tedy splňuje charakteristiky OCP\cite{ocp}.
+			
+			Třída \texttt{LinearParamMappingStrategyComponent} implementující rozhraní \texttt{AbstractParamMappingStrategyComponent}
+			umožňuje konfigurovat lineární strategii mapování parametrů VST pluginů. Využívá formulářových prvků pro zadávání
+			hodnot konfigurace. Přináší pro uživatele též možnost využití tzv. learn metody, kdy dochází ke změnám v konfiguraci
+			přímo z prostředí VST pluginu v programu Bidule. S využitím této metody lze zadávat minimální a maximální hodnotu
+			parametru VST pluginu.		
+		
+		\subsection{VstModule}
+			Modul \texttt{VstModule} obsahuje komponenty společné pro práci s virtuálními nástroji a efekty.
+			Obsahuje např. komponentu \texttt{AvailabilityComponent} pro zobrazení dostupnosti VST pluginu v rámci vrstev a na globální úrovni.
+			
+		\subsection{LayoutModule}
+			Tento modul slouží ke správě uložených projektů programu Bidule.
+			Komponenta \texttt{LayoutListPageComponent} umožňuje zobrazit seznam dostupných projektů programu Bidule.
+			Též přináší možnost načtění, editace, smazání určitého projektu, či přidání nového projektu. 
+			Zadávání detailů projektu je implementováno v komponentě \texttt{EditLayoutPageComponent} s využitím formuláře.			
+
+			Modul obsahuje též třídy \texttt{NoLayoutGuard} a \texttt{LayoutGuard} pro omezení navigace v případě, že právě není, resp. je načtený projekt programu Bidule.
+			
+		\subsection{InstrumentModule}
+			V tomto modulu jsou obsaženy komponenty pro obsluhu virtuálních hudebních nástrojů dostupných v projektu programu Bidule.			
+
+			Obsahuje komponentu \texttt{InstrumentListPageComponent}, která poskytuje seznam dostupných virtuálních nástrojů.
+			Pokud je nástroj dostupný pro aktuálně zvolenou vrstvu, lze pro něj pořídit tzv. snapshot hodnot parametrů, spravovat stránky parametrů, otevřít UI VST pluginu,
+			či zobrazit jeho dostupnost s pomocí komponenty \texttt{AvailabilityComponent} z modulu \texttt{VstModule}.
+			
+			Komponenta \texttt{InstrumentParamMappingPageComponent} umožňuje spravovat seznam stránek mapování parametrů pro daný virtuální nástroj.
+			Pro zadávání názvu stránky využívá komponentu \texttt{NamedEntityDialogComponent} z modulu \texttt{SharedModule}.
+			Uživatel může díky této komponentě též vybrat výchozí stránku mapování pro virtální nástroj.
+			
+			Pro editaci konkrétní stránky mapování je použita komponenta \texttt{ParamMappingPageComponent} z modulu \texttt{ParamMappingModule}.
+		
+		\subsection{EffectModule}
+			Tento modul zahrnuje podobnou funkcionalitu jako modul \texttt{InstrumentModule}, pracuje však s virtuálními efekty místo virtuálních nástrojů.
+			Komponenta \texttt{EffectListPageComponent} zajišťuje zobrazení seznamu dostupných efektů, oproti komponentě \texttt{InstrumentListPageComponent} přináší informaci o umístění efektu.
+			
+			Komponent \texttt{EffectParamMappingPageComponent} využívá podobně jako komponenta \texttt{InstrumentParamMappingPageComponent} pro editaci stránky mapování komponentu \texttt{ParamMappingPageComponent} z modulu \texttt{ParamMappingModule}. Jelikož efekt nemůže obsahovat více stránek mapování, chybí správa jednotlivých stránek, je však možné vybrat hlavní položku stránky mapování pro daný efekt.
+
+		\subsection{PresetModule}
+			V modulu \texttt{PresetModule} je implementována funkcionalita pro práci s presety.
+			
+			Komponenta \texttt{PresetListPageComponent} slouží ke správě kategorií presetů a presetů v rámci zvolené kategorie.
+			Umožňuje přidávat, řadit, editovat a mazat kategorie presetů a samotné presety. Pro zadávání názvu kategorií a nových presetů je využita komponenta \texttt{NamedEntityDialog} z modulu \texttt{SharedModule}. Řazení položek je implementováno s pomocí komponenty \texttt{DragDropModule} z knihovny Angular Material.
+
+			Informace o aktuálním presetu a kategorii presetu jsou synchronizovány se stavem aplikace za použití knihovny NGXS.
+			Tyto informace závisí na aktuálně zvolené vrstvě. Jelikož je stav sdílený a jeho editace je možná z prostředí dekstopové aplikace i hardwarového kontroleru, je stav desktopového uživatelského rozhraní v tomto případě automaticky synchronizován s uživatelským rozhraním hardwarového kontroleru.
+			
+			Třída \texttt{PresetDetailPageComponent} představuje komponentu pro úpravu konfigurace presetu.
+			Umožňuje zvolit jméno presetu, použitý virtuální nástroj a uloženou stránku mapování parametrů virtuálního nástroje.
+			Poskytuje též možnost zadat detaily strategie pro inicializaci virtuálního nástroje. K tomuto účelu slouží 
+			komponenty \texttt{ProgramChangeInitStrategyComponent}, \linebreak \texttt{VstPresetInitStrategyComponent} a \texttt{SnapshotInitStrategyComponent}. Jelikož informace o aktuálním presetu vč. zvolené strategie pro inicializaci jsou součástí stavu za použití knihovny NGXS, není třeba zavádět obecné rozhraní pro správu inicializačních strategií. 
+			Při přidání nové inicializační strategie stačí implementovat komponentu, která bude obsahovat logiku pro aktualizaci stavu.
+			
 		
 	\section{Perzistence dat}
 
