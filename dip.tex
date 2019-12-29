@@ -530,11 +530,11 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Jak lze vidět z drátěného modelu \ref{fig:ControllerUI-PresetSwitch}, na obrazovce procházení presetů jsou na prvním řádku displeje
 			zobrazeny kategorie presetů, na druhém řádku je zobrazen seznam presetů v dané kategorii.
 			Jelikož množství presetů v rámci jedné kategorie může být značné, je uplatněno stránkování presetů.
-			Pro volbu kategorie a její stránky slouží první řada tlačítek umístěných pod displayem.
+			Pro volbu kategorie a její stránky slouží první řada tlačítek umístěných pod displejem.
 			Při stisku tlačítka dojde k volbě příslušné kategorie. Počet stisknutí pak vyjadřuje pořadí stránky presetů, která má být zobrazena.
 			
 			Na druhém řádku displeje jsou zobrazeny presety pro danou stránku kategorie. Při kliknutí na tlačítko 
-			z druhé řady tlačítek pod displayem dojde k výběru aktivního presetu.
+			z druhé řady tlačítek pod displejem dojde k výběru aktivního presetu.
 			
 			Aktuální kategorie a preset jsou indikovány rozsvícenou LED u příslušného tlačítka.
 			
@@ -551,7 +551,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			zvolené strategie mapování. Při změně parametru nástroje je hodnota zobrazena i graficky v příslušném poli na displeji, jinak je v poli zobrazen název mapování parametru.
 			Formát zobrazení hodnoty parametru na displeji je opět určen strategií mapování parametru.
 			
-			Při stisku tlačítka z první řady pod displayem dojde k nastavení hodnoty parametru nástroje na výchozí hodnotu určenou aktuálně zvoleným presetem.		
+			Při stisku tlačítka z první řady pod displejem dojde k nastavení hodnoty parametru nástroje na výchozí hodnotu určenou aktuálně zvoleným presetem.		
 			Pokud uživatel stiskne tlačítko z druhé řady, dojde k načtení presetu příslušného záznamu historie, včetně neuložených rozdílových sad hodnot parametrů nástroje a efektů.
 			
 		\subsection{Souhrnné ovládání efektů (obrazovka C3)}\label{sec:C3}
@@ -578,7 +578,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		na datové toky a šíření změn. Lze tak jednoduše sledovat změny hodnot, provádět 
 		nad nimi různé transformace, filtrování, agregaci a další operace. Podporu reaktivního programování přináší do aplikace
 		použitý framework RxJS\cite{clow2018observers}. Velkou výhodou je možnost udržování počtu naslouchání
-		s využitím např. funkce \\\texttt{switchMap}, zrušení nerelevantních naslouchání pak probíhá automaticky a není předmětem práce programátora.
+		s využitím např. funkce \texttt{switchMap}, zrušení nerelevantních naslouchání pak probíhá automaticky a není předmětem práce programátora.
 		Framework RxJS je využitý též knihovnou NGXS zajišťující správu stavu aplikace (viz kapitolu \ref{sec:NGXS}).
 
 	\section{Komunikace přes USB}
@@ -628,8 +628,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		částí modelu stavu aplikace.
 		
 		\subsection{Synchronizace přes IPC}
-			Pro klientskou i serverovou část byly implementovány třídy \texttt{IpcActionReceiver} a 
-			\texttt{IpcActionTransmitterPlugin}. Třída \texttt{IpcActionTransmitterPlugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií akcí vyvolaných přes NGXS framework druhé straně aplikace. K příjmu zprávy slouží třída \texttt{IpcActionReceiver}, která akci předá
+			Pro klientskou i serverovou část byly implementovány třídy \texttt{Ipc\-Action\-Receiver} a 
+			\texttt{Ipc\-Action\-Transmitter\-Plugin}. Třída \texttt{Ipc\-Action\-Transmitter\-Plugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií akcí vyvolaných přes NGXS framework druhé straně aplikace. K příjmu zprávy slouží třída \texttt{Ipc\-Action\-Receiver}, která akci předá
 			NGXS frameworku tak, že simuluje lokální vyvolání dané akce. Zprávy jsou serializovány do formátu JSON a k jejich přenosu dochází
 			za použití IPC API frameworku Electron.
 		
@@ -674,11 +674,13 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			
 		\subsection{ParamMappingPageState}
 			Stránka mapování může obsahovat až 8 jednotlivých mapování, v systému se s ní pracuje dále jako s elementárním celkem. 
-			Ve stavu \\\texttt{ParamMappingPageState} je pak uložna aktuálně načtená stránka mapování. Stav není ukládán do perzistentního úložiště a je sdílen klientskou i serverovou částí aplikace. 
+			Ve stavu \texttt{ParamMappingPageState} je pak uložna aktuálně načtená stránka mapování. Stav není ukládán do perzistentního úložiště a je sdílen klientskou i serverovou částí aplikace. 
 			Kromě funkcí API pro CRUD operace obsahuje model i logiku pro správu jednotlivých mapování. 
 			Poskytuje také možnost řazení jednotlivých mapování v rámci stránky a informaci
 			o aktuálním zvoleném mapování. Impelementována je zde i logika pro načítání uložených stránek mapování
 			z VST efektů a nástrojů.
+
+			Třída \texttt{Param\-Mapping\-Loader\-Service} zajišťuje automatickou aktualizaci stavu \texttt{Param\-Mapping\-Page\-State} při změně aktuální vrstvy nebo presetu. Pokud je zvolena vrstva i preset, načte stránku mapování parametrů nástroje danou v presetu, jinak načte prázdnou stránku mapování.			
 			
 		\subsection{PresetCategoryState}
 			Tento stav obsahuje uložené kategorie presetů. Je sdílen klientskou a serverovou částí aplikace
@@ -778,33 +780,33 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Pro reprezentaci takového celku v kódu vznikla třída \texttt{ButtonGroup}. Tato třída
 		obsahuje metody pro nastavení stavu jednotlivých LED a všech LED v rámci celku.
 		Zároveň za použití třídy \texttt{EventEmitter}, která implementuje rozhraní \texttt{Observable} 
-		z frameworku RxJS, poskytuje možnost naslouchání na událost stisku tlačítka reprezentované třídou \texttt{ButtonClickEvent}.
+		z frameworku RxJS, poskytuje možnost naslouchání na událost stisku tlačítka reprezentované třídou \texttt{Button\-Click\-Event}.
 		Tlačítka jsou identifikována číslem stanoveným protokolem Automap, které je při komunikaci přenášeno
 		v MIDI zprávě typu CC. Třída \texttt{ButtonGroup} v konstruktoru přijímá seznam identifikátorů tlačítek
 		v daném celku. Zároveň poskytuje i možnost nastavení příznaku pro ignorování stisknutí.
 		Tento příznak lze zadat pro jednotlivá tlačítka zvlášť nebo hromadně pro všechna tlačítka v rámci skupiny.
 		Pokud je stisknuto tlačítko, které nemá nastavený příznak ignorování stisku, dojde zároveň k jeho podsvícení dokud není tlačítko uvolněno.
 		
-		Pro instanci třídy typu \texttt{ButtonGroup} lze též nastavit objekt impelmentující rozhraní \texttt{ClickHandlerInterface}, který reaguje
+		Pro instanci třídy typu \texttt{ButtonGroup} lze též nastavit objekt impelmentující rozhraní \texttt{Click\-Handler\-Interface}, který reaguje
 		na stisknutí, resp. uvolnění tlačítka. Nastavení lze provést globálně pro celou skupinu tlačítek nebo pro každé tlačítko zvlášť.
-		Rozhraní \texttt{ClickHandlerInterface} umožňuje třídě vyvolat vlastní událost představující stisknutí tlačítka.
-		Vlastní událost musí splňovat rozhraní třídy \texttt{ButtonClickEvent}. Pro zpracování vstupu definuje rozhraní metody,	které jsou zavolány po stisknutí, nebo uvolnění tlačítka.
-		Jako výchozí implementace rozhraní \texttt{ClickHandlerInterface} je při vytváření třídy \texttt{ButtonGroup} inicializována instance třídy 
-		\texttt{SimpleClickHandler}, která zanedbává informace o uvolnění tlačítka a vyvolává událost představující stisknutí tlačítka 
+		Rozhraní \texttt{Click\-Handler\-Interface} umožňuje třídě vyvolat vlastní událost představující stisknutí tlačítka.
+		Vlastní událost musí splňovat rozhraní třídy \texttt{Button\-Click\-Event}. Pro zpracování vstupu definuje rozhraní metody,	které jsou zavolány po stisknutí, nebo uvolnění tlačítka.
+		Jako výchozí implementace rozhraní \texttt{Click\-Handler\-Interface} je při vytváření třídy \texttt{ButtonGroup} inicializována instance třídy 
+		\texttt{Simple\-Click\-Handler}, která zanedbává informace o uvolnění tlačítka a vyvolává událost představující stisknutí tlačítka 
 		ihned po fyzickém stisknutí tlačítka. 
-		Další implementací rozhraní \texttt{ClickHandlerInterface} je třída \texttt{MultiClickHandler}, která zajišťuje zpracování vícenásobného stisknutí tlačítka. 
+		Další implementací rozhraní \texttt{Click\-Handler\-Interface} je třída \texttt{Multi\-Click\-Handler}, která zajišťuje zpracování vícenásobného stisknutí tlačítka. 
 		V rámci instance lze nastavit nejvyšší počet stisknutí tlačítka a maximální časový rozestup mezi jednotlivými stisky tlačítka, než dojde k vyvolání události stisknutí tlačítka. 
-		Událost \\\texttt{ButtonMultiClickEvent} poté nese kromě identifikátoru stisknutého tlačítka i informaci o počtu stisknutí tlačítka.
+		Událost \texttt{Button\-Multi\-Click\-Event} poté nese kromě identifikátoru stisknutého tlačítka i informaci o počtu stisknutí tlačítka.
 		V budoucnu je možné implementovat např. třídu pro zpracování podržení tlačítka, kde budou zohledněny i vstupní události fyzického uvolnění tlačítka.
 		
 		Jelikož mají logické celky tlačítek často pravoúhlý tvar, kde je výhodné použít adresaci pomocí
 		kartézské soustavy souřadnic, byla pro tento účel implementována třída \texttt{ButtonMatrix} využívající
 		s pomocí kompozice třídu \texttt{ButtonGroup}. V konstruktoru je navíc vyžadována informace o rozměrech mřížky a identifikátor prvního tlačítka. 
 		Identifikátory dalších tlačítek jsou vypočítány automaticky podle číslování plynoucího z protokolu Automap.
-		Události stisknutí tlačítka v mřížce, kterým lze naslouchat, obsahují informaci o souřadnicích tlačítka. Reprezentuje je třída \texttt{ButtonMatrixEvent},
-		jejíž rozhraní vychází z třídy \texttt{ButtonClickEvent}. K dispozici je i vazba na původní událost typu \texttt{ButtonClickEvent}, která je řešena pomocí kompozice.
+		Události stisknutí tlačítka v mřížce, kterým lze naslouchat, obsahují informaci o souřadnicích tlačítka. Reprezentuje je třída \texttt{Button\-Matrix\-Event},
+		jejíž rozhraní vychází z třídy \texttt{Button\-Click\-Event}. K dispozici je i vazba na původní událost typu \texttt{Button\-Click\-Event}, která je řešena pomocí kompozice.
 		
-		Pro podporu přerušovaného podsvícení tlačítek byla zavedena třída \\\texttt{InterruptionClock}. Díky této třídě lze 
+		Pro podporu přerušovaného podsvícení tlačítek byla zavedena třída \texttt{Interruption\-Clock}. Díky této třídě lze 
 		udržovat přerušované podsvícení synchronní napříč celou aplikací. Třída podporuje čtyři stupně rychlosti blikání.
 		S pomocí třídy \texttt{EventEmitter} z frameworku RxJS lze naslouchat obdélníkovému signálu představujícímu stav podsvícení podle zvoleného stupně frekvence přerušení.
 
@@ -830,12 +832,12 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		Třída \texttt{Knobs} zastupuje skupinu nekonečných knobů s LED prstencem. Umožňuje pro každý knob změnit mód zobrazení hodnoty a
 		nastavit hodnotu indikovanou LED prstencem. Též poskytuje s pomocí třídy \texttt{EventEmitter} z frameworku RxJS události, kterým lze naslouchat.
-		Třída \texttt{KnobEvent} představuje rodičovskou třídu pro všechny události knobů. Třída \texttt{RotationKnobEvent} jí dědí a přidává informaci
+		Třída \texttt{KnobEvent} představuje rodičovskou třídu pro všechny události knobů. Třída \texttt{Rotation\-Knob\-Event} jí dědí a přidává informaci
 		o směru a rychlosti otočení. Naslouchat lze událostem dotyku, uvolnení dotyku a otočení.
 		
 		\subsection{Architektura}
 		Třídy implementující jednotlivé části vrstvy jsou použity ve větších celcích určených rozmístením prvků na hardwarovém kontroleru.
-		Např. třída \linebreak	\texttt{NavigationRegionDriver}, která představuje množinu ovládacích prvků určených k navigaci, využívá dvě instance třídy \texttt{ButtonGroup}.
+		Např. třída \linebreak	\texttt{Navigation\-Region\-Driver}, která představuje množinu ovládacích prvků určených k navigaci, využívá dvě instance třídy \texttt{ButtonGroup}.
 		Třída \texttt{DisplayRegionDriver} pro ovládní prvků v oblasti displeje obsahuje instance tříd \texttt{Display}, \texttt{Knobs} a \texttt{ButtonMatrix}.
 		Tyto celky jsou použity v implementaci logiky uživatelského rozhraní hardwarového kontroleru.
 		
@@ -843,19 +845,19 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Jednotlivé části vrstvy uživatelského rozhraní hardwarového kontroleru jsou orchestrovány s pomocí třídy \texttt{KeyboardRouter}.
 		Ta zároveň slouží pro navigaci v rámci uživatelského rozhraní kontroleru. Pro tento účel poskytuje metodu \texttt{navigate}, která
 		způsobí načtení požadovaného stavu navigace. Stav navigace je vyjádřen řetězcem, jednotlivé stavy nemůžou obsahovat žádná metadata. Ta je případně
-		vhoné přenášet ve vlastnosti \texttt{KeyboardRoute} stavu \texttt{SessionState} s využitím knihovny NGXS. Třída \\\texttt{KeyboardRouter} obsahuje referenci na všechny komponenty řídící jednotlivé 
+		vhoné přenášet ve vlastnosti \texttt{KeyboardRoute} stavu \texttt{SessionState} s využitím knihovny NGXS. Třída \texttt{KeyboardRouter} obsahuje referenci na všechny komponenty řídící jednotlivé 
 		části uživatelského rozhraní hardwarového kontroleru. Podle aktuálního stavu navigace určuje, které komponenty jsou právě aktivní. 
-		Každá komponenta pro řízení části uživatelského rozhraní kontroleru musí implementovat rozhraní \texttt{MortalInterface}, které obsahuje deklaraci metody \\\texttt{onInit} a \\\texttt{onDestroy}.
+		Každá komponenta pro řízení části uživatelského rozhraní kontroleru musí implementovat rozhraní \texttt{MortalInterface}, které obsahuje deklaraci metody \texttt{onInit} a \texttt{onDestroy}.
 		Z pohledu návrhového vzoru MVC\cite{reenskaug1979original} se chovají takové komponenty dohromady jako view a controller. V následujících podkapitolách
 		budou diskutovány jednotlivé komponenty pro řízení části uživatelského rozhraní.
 		
 		\subsection{Komponenty pro ovlání oblasti displeje}\label{sec:display-area-components}
 			Jelikož lze na displeji dobře indikovat aktuální chování přidružených prvků, oblast displeje může být použita pro větší množství obrazovek.
-			V této podkapitole budou diskutovány komponenty pro řízení oblasti displeje. Všechny komponenty pracují s vrstvou poskytující vstupně-výstupní operace s připojeným hardwarovým kontrolerem (viz kapitolu \ref{sec:automap-hw-controller}). Využívají pouze část vrstvy, která poskytuje ovládání prvků oblasti displeje, tedy třídu \texttt{DisplayRegionDriver}.
+			V této podkapitole budou diskutovány komponenty pro řízení oblasti displeje. Všechny komponenty pracují s vrstvou poskytující vstupně-výstupní operace s připojeným hardwarovým kontrolerem (viz kapitolu \ref{sec:automap-hw-controller}). Využívají pouze část vrstvy, která poskytuje ovládání prvků oblasti displeje, tedy třídu \texttt{Display\-Region\-Driver}.
 					
-			\subsubsection{Třída ParamMappingContoller}
+			\subsubsection{ParamMappingContoller}
 				Tato komponenta ovládá pouze jeden řádek oblasti displeje a měla by být tedy použita v rámci komponenty představující celou obrazovku.
-				Je využitá v třídách \texttt{InstrumentDetailController}, \texttt{EffectOverviewController} a \texttt{EffectDetailController} implementující obrazovky C2 - C4 (viz kapitoly \ref{sec:C2}, \ref{sec:C3}, \ref{sec:C4}). Zajišťuje chování pro ovládání a indikaci parametrů VST pluginů. Aktuálně ovládané parametry a jejich mapování načítá ze stavu \texttt{ParamMappingPageState}.
+				Je využitá v třídách \texttt{Instrument\-Detail\-Controller}, \texttt{Effect\-Overview\-Controller} a \texttt{Effect\-Detail\-Controller} implementující obrazovky C2 - C4 (viz kapitoly \ref{sec:C2}, \ref{sec:C3}, \ref{sec:C4}). Zajišťuje chování pro ovládání a indikaci parametrů VST pluginů. Aktuálně ovládané parametry a jejich mapování načítá ze stavu \texttt{Param\-Mapping\-Page\-State}.
 				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích okolo otočných enkodérů a indikuje hodnotu na LED prstenci podle strategie mapování. Též
 				reaguje na události otočného enkoderu. Při jeho otočení podle strategie mapování vyvolá akci aktualizace hodnoty parametru VST pluginu.
 				Zobrazení na displeji poskytuje standardně název ovládaného parametru, pokud však není nastavený příznak pro trvalé 
@@ -864,70 +866,66 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				Formát zobrazení hodnoty na displeji je určen stragetií mapování.
 				Hodnota parametru je zobrazena jen po určitý čas, poté se opět zobrazení vrátí na název ovládaného parametru. 
 				Toto chování je zajištěno netriviální logikou vyjádřenou za použití reaktivního programování a knihovny RxJS.
-
-			\subsection{ParamMappingLoaderService}
-				Třída \texttt{ParamMappingLoaderService} zajišťuje automatickou aktualizaci stavu \texttt{ParamMappingPageState} při změně aktuální vrstvy nebo presetu.
-				Pokud je zvolena vrstva i preset, načte stránku mapování parametrů nástroje danou v presetu, jinak načte prázdnou stránku mapování.
 				
-			\subsection{Třída LastPresetsController}
-				Podobně jako u třídy \texttt{ParamMappingController} je ovládán pouze jeden řádek oblasti displeje. Na řádku jsou zobrazeny
+			\subsubsection{LastPresetsController}
+				Podobně jako u třídy \texttt{Param\-Mapping\-Controller} je ovládán pouze jeden řádek oblasti displeje. Na řádku jsou zobrazeny
 				záznamy historie posledních použitých presetů a aktuální preset. Při stisknutí příslušného tlačítka dojde k vyvolání 
-				akce \texttt{SelectPresetAction} určující, který preset má být aktuálně načten. Třída načítá data ze stavu \texttt{PresetSessionState}
-				pomocí metody \texttt{getCurrentHistory}, jejíž výstup je závislý na aktuální vrstvě. Při změně aktivní vrstvy tedy dojde
+				akce \texttt{Select\-Preset\-Action} určující, který preset má být aktuálně načten. Třída načítá data ze stavu \texttt{Preset\-Session\-State}
+				pomocí metody \texttt{get\-Current\-History}, jejíž výstup je závislý na aktuální vrstvě. Při změně aktivní vrstvy tedy dojde
 				k zobrazení záznamů historie pro danou vrstvu.
 							
-			\subsection{Třída EffectSwitchController}
-				Pro přepínání ovládaných efektů byla vytvořena třída \texttt{EffectSwitchController}. 
-				Ovládá pouze jeden řádek oblasti displeje a je používaná třídami \texttt{EffectOverviewController} a \texttt{EffectDetailController}. Data načítá ze stavů \texttt{SessionState}, \texttt{ManualState} a \texttt{VstState}.
+			\subsubsection{EffectSwitchController}
+				Pro přepínání ovládaných efektů byla vytvořena třída \texttt{Effect\-Switch\-Controller}. 
+				Ovládá pouze jeden řádek oblasti displeje a je používaná třídami \texttt{Effect\-Overview\-Controller} a \texttt{Effect\-Detail\-Controller}. Data načítá ze stavů \texttt{SessionState}, \texttt{ManualState} a \texttt{VstState}.
 				Poskytuje uživateli seznam efektů dostupných pro aktuálně zvolený kontext, který zahrnuje aktuální vrstvu a konfiguraci
 				zobrazení efektů, tedy umístění efektů (vstup nebo výstup) a příznak pro ovládání globálních efektů.
-				Při stisknutí tlačítka dojde k vyvolání vlastní události volby efektu s použitím třídy \texttt{EventEmitter} z frameworku RxJS. Aktivní efekt je možné nastavit s použití metody \texttt{SetActiveEffect}, která interně využívá
+				Při stisknutí tlačítka dojde k vyvolání vlastní události volby efektu s použitím třídy \texttt{EventEmitter} z frameworku RxJS. Aktivní efekt je možné nastavit s použití metody \texttt{Set\-Active\-Effect}, která interně využívá
 				třídu \texttt{BehaviorSubject} z frameworku RxJS.			
 							
-			\subsubsection{Třída InstrumentDetailController}
-				Tato třída vužívá v kombinaci tříd \texttt{ParamMappingController} a \texttt{LastPresetsController} tak, aby bylo dosaženo kýženého chování (viz kapitolu \ref{sec:C2}).
-				Aktualizace stránky mapování parametrů nástroje je implementována ve třídě \texttt{ParamMappingLoaderService}.
+			\subsubsection{InstrumentDetailController}
+				Tato třída vužívá v kombinaci tříd \texttt{Param\-Mapping\-Controller} a \texttt{Last\-Presets\-Controller} tak, aby bylo dosaženo kýženého chování (viz kapitolu \ref{sec:C2}).
+				Aktualizace stránky mapování parametrů nástroje je implementována ve třídě \texttt{Param\-Mapping\-Loader\-Service}.
 				
-			\subsubsection{Třída EffectOverviewController}
-				Obrazovka souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}) je implementována třídou \texttt{EffectOverviewController},
-				která využívá jako podkomponenty třídy \texttt{EffectSwitchController} a \texttt{ParamMappingContoller}.
-				Pokud je vyvolána událost volby efektu instancí třídy \texttt{EffectSwitchController}, dojde k nastavení příslušného stavu navigace v rámci hardwarového kontroleru a je načtena obrazovka detailu efektu (viz kapitolu \ref{sec:C4}).
-				U instance třídy \texttt{ParamMappingController} je nastaven příznak pro trvalé zobrazení hodnoty parametru efektu.
-				Aktualizace stránky mapování parametrů probíhá automaticky při změně konfigurace dostupných efektů vyvoláním akce \texttt{LoadParamMappingPageAction}. U každého dostupného efektu je vybráno hlavní mapování a z těchto mapování
+			\subsubsection{EffectOverviewController}
+				Obrazovka souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}) je implementována třídou \texttt{Effect\-Overview\-Controller},
+				která využívá jako podkomponenty třídy \texttt{Effect\-Switch\-Controller} a \texttt{Param\-Mapping\-Contoller}.
+				Pokud je vyvolána událost volby efektu instancí třídy \texttt{Effect\-Switch\-Controller}, dojde k nastavení příslušného stavu navigace v rámci hardwarového kontroleru a je načtena obrazovka detailu efektu (viz kapitolu \ref{sec:C4}).
+				U instance třídy \texttt{Param\-Mapping\-Controller} je nastaven příznak pro trvalé zobrazení hodnoty parametru efektu.
+				Aktualizace stránky mapování parametrů probíhá automaticky při změně konfigurace dostupných efektů vyvoláním akce \texttt{Load\-Param\-Mapping\-Page\-Action}. U každého dostupného efektu je vybráno hlavní mapování a z těchto mapování
 				je poté sestrojena výsledná stránka mapování. 			
 				
-			\subsection{Třída EffectDetailController}
-				Podobně jako u třídy \texttt{EffectOverviewController} je u této třídy využita komponenta \texttt{EffectSwitchController},
+			\subsubsection{EffectDetailController}
+				Podobně jako u třídy \texttt{Effect\-Overview\-Controller} je u této třídy využita komponenta \texttt{Effect\-Switch\-Controller},
 				s pomocí které je též indikován stav aktuálně ovládaného efektu. Událost volby efektu je buď 
 				reflektována změnou stavu určením nového aktivního efektu, nebo je uživatel přesměrován na obrazovku souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
-				Zároveň je třídou \texttt{EffectDetailController} využita i komponenta \texttt{EffectOverviewController} poskytující
+				Zároveň je třídou \texttt{Effect\-Detail\-Controller} využita i komponenta \texttt{Effect\-Overview\-Controller} poskytující
 				stránku mapování určenou aktuálně ovládaným efektem. Při změně části stavu určující aktuálně ovládaný efekt
 				je vyvolána akce načtení stránky mapování parametrů z daného efektu.
 		
-			\subsection{Třída PresetController}
+			\subsubsection{PresetController}
 				Třída PresetController představuje implementaci obrazovky C1 (viz kapitolu \ref{sec:C1}). 
 				Zajišťuje procházení kategorií presetů a volbu a indikaci aktuálního presetu.
-				Data získává prostřednictvím stavů \texttt{SessionState}, \texttt{PresetCategoryState}, \texttt{PresetState} a \texttt{PresetSessionState}.
+				Data získává prostřednictvím stavů \texttt{SessionState}, \texttt{Preset\-Category\-State}, \texttt{PresetState} a \texttt{Preset\-Session\-State}.
 				Aktuální zvolená kategorie je obousměrně synchronizována s desktopovým uživatelským rozhraním aplikace.
-				Pro možnost stránkování je využitá třída pro zpracování vícenásobného stisku tlačítka \texttt{MultiClickHandler}.
+				Pro možnost stránkování je využitá třída pro zpracování vícenásobného stisku tlačítka \texttt{Multi\-Click\-Handler}.
 				Netriviální logika je implementována za použití reaktivního programování ve frameworku RxJS.
 		
-			\subsubsection{Třída EmptyController}
+			\subsubsection{EmptyController}
 				Instance této komponenty je načtena po spuštění aplikace nebo připojení hardwarového kontroleru k systému. Nereaguje na žádné vstupy od uživatele, na displeji zobrazí informativní hlášku.
 						
 		
 		\subsection{Ostatní komponenty}
 			\subsubsection{Třída LayerController}
 				Třída \texttt{LayerController} implementuje chování čtveřice tlačítek nalevo pod displejem. Slouží k určování a indikaci aktuálně zvoleného manuálu a vrstvy.
-				Tlačítka představují jednotlivé manuály. Rychlost blikání tlačítek značí pořadí vrstvy s využitím třídy \\\texttt{InterruptionClock}. Pro nastavení
-				aktuálního manuálu a vrstvy je využita třída pro zpracování událostí stisknutí tlačítka \\\texttt{MultiClickHandler}.
+				Tlačítka představují jednotlivé manuály. Rychlost blikání tlačítek značí pořadí vrstvy s využitím třídy \texttt{InterruptionClock}. Pro nastavení
+				aktuálního manuálu a vrstvy je využita třída pro zpracování událostí stisknutí tlačítka \texttt{Multi\-Clic\-kHandler}.
 				V případech, kdy kvůli omezením není možné přepínat aktuální vrstvu (např. při editaci presetu) je potlačeno veškeré ovládání a indikace aktuální vrstvy.
 				Komponenta je globální a její instance je tedy aktivní po celou dobu běhu aplikace.
 			
 			\subsubsection{Třída DisplayModeController}
-				K přepínání obrazovek, tedy určení aktivní komponenty ovládající oblast displeje, slouží třída \texttt{DisplayModeController}. Dvojicí tlačítek
+				K přepínání obrazovek, tedy určení aktivní komponenty ovládající oblast displeje, slouží třída \texttt{Display\-Mode\-Controller}. Dvojicí tlačítek
 				umístěných nalevo od displeje lze zobrazit až 6 možných obrazovek (viz kapitolu \ref{sec:display-area-components}). Chování tlačítek využívá
-				tříd \texttt{MultiClickHandler} a \texttt{InterruptionClock} tak, aby splnily požadované chování (viz kapitolu \ref{sec:controller-navigation-design}).
+				tříd \texttt{Multi\-Click\-Handler} a \texttt{Interruption\-Clock} tak, aby splnily požadované chování (viz kapitolu \ref{sec:controller-navigation-design}).
 	
 	\section{Desktopové uživatelské rozhraní}
 		Pro desktopové uživatelské rozhraní byl zvolen framework Angular Material, který přináší běžné prvky
@@ -985,15 +983,15 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			
 		\subsection{SharedModule}
 			V modulu \texttt{SharedModule} jsou implementovány veškeré komponenty, které mohou být použity napříč celou aplikací.
-			Obsahuje např. komponentu pro zobrazení chybového stavu, obecný dialog pro zadání jména (třída \texttt{NamedEntityDialogComponent}) a direktivu pro potvrzení libovolné akce uživatelem (třída \texttt{ConfirmationDirective}).
+			Obsahuje např. komponentu pro zobrazení chybového stavu, obecný dialog pro zadání jména (třída \texttt{Named\-Entity\-Dialog\-Component}) a direktivu pro potvrzení libovolné akce uživatelem (třída \texttt{Confirmation\-Directive}).
 			
 		\subsection{ParamMappingModule}
-			Tento modul poskytuje znovupoužitelnou komponentu \texttt{ParamMappingPageComponent} pro správu stránek mapování parametrů VST pluginů. Ta umožňuje přidávat, odebírat a upravovat jednotlivé položky stránky mapování. Pro zadávání názvu položky
-			využívá komponentu \texttt{NamedEntityDialogomponent} definovanou v modulu \texttt{SharedModule}.			
-			Pro každou položku umožňuje zvolit strategii mapování. Rozhraní \texttt{AbstractParamMappingStrategyComponent} představuje API pro komponenty umožňující konfiguraci konkrétního mapování. Díky této abstrakci lze v budoucnu přidávat jednoduše další 
+			Tento modul poskytuje znovupoužitelnou komponentu \texttt{Param\-Mapping\-Page\-Component} pro správu stránek mapování parametrů VST pluginů. Ta umožňuje přidávat, odebírat a upravovat jednotlivé položky stránky mapování. Pro zadávání názvu položky
+			využívá komponentu \texttt{Named\-Entity\-Dialog\-Component} definovanou v modulu \texttt{SharedModule}.			
+			Pro každou položku umožňuje zvolit strategii mapování. Rozhraní \texttt{Abstract\-Param\-Mapping\-Strategy\-Component} představuje API pro komponenty umožňující konfiguraci konkrétního mapování. Díky této abstrakci lze v budoucnu přidávat jednoduše další 
 			strategie, aniž by bylo potřeba upravovat již existující kód. Návrh tedy splňuje charakteristiky OCP\cite{ocp}.
 			
-			Třída \texttt{LinearParamMappingStrategyComponent} implementující rozhraní \texttt{AbstractParamMappingStrategyComponent}
+			Třída \texttt{Linear\-Param\-Mapping\-Strategy\-Component} implementující rozhraní \texttt{Abstract\-Param\-Mapping\-Strategy\-Component}
 			umožňuje konfigurovat lineární strategii mapování parametrů VST pluginů. Využívá formulářových prvků pro zadávání
 			hodnot konfigurace. Přináší pro uživatele též možnost využití tzv. learn metody, kdy dochází ke změnám v konfiguraci
 			přímo z prostředí VST pluginu v programu Bidule. S využitím této metody lze zadávat minimální a maximální hodnotu
@@ -1001,48 +999,48 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		\subsection{VstModule}
 			Modul \texttt{VstModule} obsahuje komponenty společné pro práci s virtuálními nástroji a efekty.
-			Obsahuje např. komponentu \texttt{AvailabilityComponent} pro zobrazení dostupnosti VST pluginu v rámci vrstev a na globální úrovni.
+			Obsahuje např. komponentu \texttt{Availability\-Component} pro zobrazení dostupnosti VST pluginu v rámci vrstev a na globální úrovni.
 			
 		\subsection{LayoutModule}
 			Tento modul slouží ke správě uložených projektů programu Bidule.
-			Komponenta \texttt{LayoutListPageComponent} umožňuje zobrazit seznam dostupných projektů programu Bidule.
+			Komponenta \texttt{Layout\-List\-Page\-Component} umožňuje zobrazit seznam dostupných projektů programu Bidule.
 			Též přináší možnost načtění, editace, smazání určitého projektu, či přidání nového projektu. 
-			Zadávání detailů projektu je implementováno v komponentě \texttt{EditLayoutPageComponent} s využitím formuláře.			
+			Zadávání detailů projektu je implementováno v komponentě \texttt{Edit\-Layout\-Page\-Component} s využitím formuláře.			
 
 			Modul obsahuje též třídy \texttt{NoLayoutGuard} a \texttt{LayoutGuard} pro omezení navigace v případě, že právě není, resp. je načtený projekt programu Bidule.
 			
 		\subsection{InstrumentModule}
 			V tomto modulu jsou obsaženy komponenty pro obsluhu virtuálních hudebních nástrojů dostupných v projektu programu Bidule.			
 
-			Obsahuje komponentu \texttt{InstrumentListPageComponent}, která poskytuje seznam dostupných virtuálních nástrojů.
+			Obsahuje komponentu \texttt{Instrument\-List\-Page\-Component}, která poskytuje seznam dostupných virtuálních nástrojů.
 			Pokud je nástroj dostupný pro aktuálně zvolenou vrstvu, lze pro něj pořídit tzv. snapshot hodnot parametrů, spravovat stránky parametrů, otevřít UI VST pluginu,
-			či zobrazit jeho dostupnost s pomocí komponenty \texttt{AvailabilityComponent} z modulu \texttt{VstModule}.
+			či zobrazit jeho dostupnost s pomocí komponenty \texttt{Availability\-Component} z modulu \texttt{VstModule}.
 			
-			Komponenta \texttt{InstrumentParamMappingPageComponent} umožňuje spravovat seznam stránek mapování parametrů pro daný virtuální nástroj.
-			Pro zadávání názvu stránky využívá komponentu \texttt{NamedEntityDialogComponent} z modulu \texttt{SharedModule}.
+			Komponenta \texttt{Instrument\-Param\-Mapping\-Page\-Component} umožňuje spravovat seznam stránek mapování parametrů pro daný virtuální nástroj.
+			Pro zadávání názvu stránky využívá komponentu \texttt{Named\-Entity\-Dialog\-Component} z modulu \texttt{SharedModule}.
 			Uživatel může díky této komponentě též vybrat výchozí stránku mapování pro virtální nástroj.
 			
-			Pro editaci konkrétní stránky mapování je použita komponenta \texttt{ParamMappingPageComponent} z modulu \texttt{ParamMappingModule}.
+			Pro editaci konkrétní stránky mapování je použita komponenta \texttt{Param\-Mapping\-Page\-Component} z modulu \texttt{Param\-Mapping\-Module}.
 		
 		\subsection{EffectModule}
-			Tento modul zahrnuje podobnou funkcionalitu jako modul \texttt{InstrumentModule}, pracuje však s virtuálními efekty místo virtuálních nástrojů.
-			Komponenta \texttt{EffectListPageComponent} zajišťuje zobrazení seznamu dostupných efektů, oproti komponentě \texttt{InstrumentListPageComponent} přináší informaci o umístění efektu.
+			Tento modul zahrnuje podobnou funkcionalitu jako modul \texttt{Instrument\-Module}, pracuje však s virtuálními efekty místo virtuálních nástrojů.
+			Komponenta \texttt{Effect\-List\-Page\-Component} zajišťuje zobrazení seznamu dostupných efektů, oproti komponentě \texttt{Instrument\-List\-Page\-Component} přináší informaci o umístění efektu.
 			
-			Komponent \texttt{EffectParamMappingPageComponent} využívá podobně jako komponenta \texttt{InstrumentParamMappingPageComponent} pro editaci stránky mapování komponentu \texttt{ParamMappingPageComponent} z modulu \texttt{ParamMappingModule}. Jelikož efekt nemůže obsahovat více stránek mapování, chybí správa jednotlivých stránek, je však možné vybrat hlavní položku stránky mapování pro daný efekt.
+			Komponent \texttt{Effect\-Param\-Mapping\-Page\-Component} využívá podobně jako komponenta \texttt{Instrument\-ParamMapping\-Page\-Component} pro editaci stránky mapování komponentu \texttt{ParamMapping\-Page\-Component} z modulu \texttt{Param\-Mapping\-Module}. Jelikož efekt nemůže obsahovat více stránek mapování, chybí správa jednotlivých stránek, je však možné vybrat hlavní položku stránky mapování pro daný efekt.
 
 		\subsection{PresetModule}
-			V modulu \texttt{PresetModule} je implementována funkcionalita pro práci s presety.
+			V modulu \texttt{Preset\-Module} je implementována funkcionalita pro práci s presety.
 			
-			Komponenta \texttt{PresetListPageComponent} slouží ke správě kategorií presetů a presetů v rámci zvolené kategorie.
-			Umožňuje přidávat, řadit, editovat a mazat kategorie presetů a samotné presety. Pro zadávání názvu kategorií a nových presetů je využita komponenta \texttt{NamedEntityDialog} z modulu \texttt{SharedModule}. Řazení položek je implementováno s pomocí komponenty \texttt{DragDropModule} z knihovny Angular Material.
+			Komponenta \texttt{Preset\-List\-Page\-Component} slouží ke správě kategorií presetů a presetů v rámci zvolené kategorie.
+			Umožňuje přidávat, řadit, editovat a mazat kategorie presetů a samotné presety. Pro zadávání názvu kategorií a nových presetů je využita komponenta \texttt{Named\-Entity\-Dialog} z modulu \texttt{SharedModule}. Řazení položek je implementováno s pomocí komponenty \texttt{Drag\-Drop\-Module} z knihovny Angular Material.
 
 			Informace o aktuálním presetu a kategorii presetu jsou synchronizovány se stavem aplikace za použití knihovny NGXS.
 			Tyto informace závisí na aktuálně zvolené vrstvě. Jelikož je stav sdílený a jeho editace je možná z prostředí dekstopové aplikace i hardwarového kontroleru, je stav desktopového uživatelského rozhraní v tomto případě automaticky synchronizován s uživatelským rozhraním hardwarového kontroleru.
 			
-			Třída \texttt{PresetDetailPageComponent} představuje komponentu pro úpravu konfigurace presetu.
+			Třída \texttt{Preset\-Detail\-Page\-Component} představuje komponentu pro úpravu konfigurace presetu.
 			Umožňuje zvolit jméno presetu, použitý virtuální nástroj a uloženou stránku mapování parametrů virtuálního nástroje.
 			Poskytuje též možnost zadat detaily strategie pro inicializaci virtuálního nástroje. K tomuto účelu slouží 
-			komponenty \texttt{ProgramChangeInitStrategyComponent}, \linebreak \texttt{VstPresetInitStrategyComponent} a \texttt{SnapshotInitStrategyComponent}. Jelikož informace o aktuálním presetu vč. zvolené strategie pro inicializaci jsou součástí stavu za použití knihovny NGXS, není třeba zavádět obecné rozhraní pro správu inicializačních strategií. 
+			komponenty \texttt{Program\-Change\-Init\-Strategy\-Component}, \linebreak \texttt{Vst\-Preset\-Init\-Strategy\-Component} a \texttt{Snapshot\-Init\-Strategy\-Component}. Jelikož informace o aktuálním presetu vč. zvolené strategie pro inicializaci jsou součástí stavu za použití knihovny NGXS, není třeba zavádět obecné rozhraní pro správu inicializačních strategií. 
 			Při přidání nové inicializační strategie stačí implementovat komponentu, která bude obsahovat logiku pro aktualizaci stavu.
 			
 		
@@ -1054,20 +1052,20 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Jelikož je třeba pro každý projekt programu Bidule pracovat s jeho konfigurací, bylo nutné implementovat možnost importu konfigurace projektu do aplikace. Veškeré potřebné informace jsou uloženy v souboru projektu ve formátu XML. K načtení
 			informací z formátu XML byl použitý framework \texttt{xml2js}. 
 			
-			Třída \texttt{BiduleLayoutParser} zajišťuje načtení projektu podle architektury popsané v kapitole \ref{sec:bidule-components}.
+			Třída \texttt{Bidule\-Layout\-Parser} zajišťuje načtení projektu podle architektury popsané v kapitole \ref{sec:bidule-components}.
 			Načítá dostupné manuály a vrstvy, virtuální nástroje a efekty,
 			a vytváří třídu \texttt{BiduleLayout}, která tyto informace obsahuje.
 			
-			Zpracování informací z třídy \texttt{BiduleLayout} implementuje třída \texttt{BiduleLayoutReader}.
+			Zpracování informací z třídy \texttt{BiduleLayout} implementuje třída \texttt{Bidule\-Layou\-tReader}.
 			Ta z poskytuntého objektu odešle příslušné akce za pomoci knihovny NGXS a aktualizuje tak sdílenou část stavu implementovanou ve třídě \texttt{VSTState}.
 			
-			Inicializaci a indikaci načítání projektu implementuje třída \texttt{BiduleLayoutOpener}. Přes protokol OSC do programu Bidule odesílá příkaz pro otevření projektu ze souboru zadaného v argumentu. V pravidelném intervalu pak odesílá OSC zprávy pro ověření, zda již bylo načítání projektu v programu Bidule dokončeno. V takovém případě program Bidule odpoví a aplikace rozliší, zda došlo k chybě nebo úspěšnému načtení projektu.			
+			Inicializaci a indikaci načítání projektu implementuje třída \texttt{Bidule\-Layout\-Opener}. Přes protokol OSC do programu Bidule odesílá příkaz pro otevření projektu ze souboru zadaného v argumentu. V pravidelném intervalu pak odesílá OSC zprávy pro ověření, zda již bylo načítání projektu v programu Bidule dokončeno. V takovém případě program Bidule odpoví a aplikace rozliší, zda došlo k chybě nebo úspěšnému načtení projektu.			
 
 		\section{Ukládání a načítání konfigurace}
 			Perzistence konfigurace aplikace pracuje se snímkem aktuálního stavu aplikace za pomoci knihovny NGXS.
-			Třída \texttt{StatePersisterPlugin} implementuje zásuvný modul pro knihovnu NGXS, který jednotlivé části stavu serializuje do formátu JSON a ukládá je do souborů. Perzistence probíhá na globální nebo lokální úrovni, kde je konfigurace uložena pro každý projekt zvlášť. Třída \texttt{StateLoaderHandler} zajišťuje načítání uložené konfigurace po inicializaci aplikace, nebo po načtení projektu.
+			Třída \texttt{State\-Persister\-Plugin} implementuje zásuvný modul pro knihovnu NGXS, který jednotlivé části stavu serializuje do formátu JSON a ukládá je do souborů. Perzistence probíhá na globální nebo lokální úrovni, kde je konfigurace uložena pro každý projekt zvlášť. Třída \texttt{State\-Loader\-Handler} zajišťuje načítání uložené konfigurace po inicializaci aplikace, nebo po načtení projektu.
 			
-			K uložení informací slouží vyvolání akce \texttt{PersistStateAction}. K tomu dochází automaticky v daném intervalu, nebo přes desktopového uživatelského rozhraní.
+			K uložení informací slouží vyvolání akce \texttt{Persist\-State\-Action}. K tomu dochází automaticky v daném intervalu, nebo přes desktopového uživatelského rozhraní.
 
 
 \chapter{Testování}
@@ -1127,8 +1125,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{Help and documentation - Nápověda a návody}
 			Pro uživatele může být těžké se v aplikaci zorientovat, jelikož aplikace neposkytuje žádné nápovědy ani legendy. V případě hardwarového kontroleru není zahrnuta žádná nápověda. Vhodné by bylo poskytnout uživatelskou příručku, případně audiovizuálního průvodce.
 		
-	\subsection{Uživatelské testování}
-		\subsubsection{Testovací scénář}
+	\section{Uživatelské testování}
+		\subsection{Testovací scénář}
 			Pro účely testování byl použitý následující testovací scénář.
 			
 			V desktopové aplikaci proveďte následující úkony:
@@ -1149,9 +1147,9 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				\item Na první vrstvě načtěte původní preset.
 			\end{enumerate}
 		
-		\subsubsection{Uživatel č. 1}
-		\subsubsection{Uživatel č. 2}
-		\subsubsection{Uživatel č. 3}
+		\subsection{Uživatel č. 1}
+		\subsection{Uživatel č. 2}
+		\subsection{Uživatel č. 3}
 \begin{conclusion}
 	%sem napište záver Vaší práce
 \end{conclusion}
