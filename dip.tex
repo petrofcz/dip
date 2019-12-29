@@ -822,17 +822,17 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Všechny otočné ovladače podporují vyslaní signálu při dotyku, resp. jeho přerušení. 
 		
 		U nekonečných knobů lze nastavit mód zobrazení hodnoty na LED prstenci (např. zobrazení bodem, kruhovou výsečí).
-		Při otočení zařízení odešle MIDI zprávu určující směr a rychlost pohybu.
+		Při otočení enkodéru zařízení odešle MIDI zprávu určující směr a rychlost pohybu.
 		
 		Rotační enkodér pro	hlavní navigaci lze stisknout a odeslat tak příslušnou MIDI zprávu. Při jeho otočení
 		zařízení odešle MIDI zprávu podobně jako u rotačních enkodérů s LED prstencem.
 		
-		U klasických potencimetrů zařízení odesílá při změně hodnoty aktuální hodnotu vyjádřenou 7b.
+		U klasických potencimetrů zařízení odesílá při změně hodnoty aktuální hodnotu vyjádřenou 7 bity.
 		
 		Třída \texttt{Knobs} zastupuje skupinu nekonečných knobů s LED prstencem. Umožňuje pro každý knob změnit mód zobrazení hodnoty a
 		nastavit hodnotu indikovanou LED prstencem. Též poskytuje s pomocí třídy \texttt{EventEmitter} z frameworku RxJS události, kterým lze naslouchat.
 		Třída \texttt{KnobEvent} představuje rodičovskou třídu pro všechny události knobů. Třída \texttt{Rotation\-Knob\-Event} jí dědí a přidává informaci
-		o směru a rychlosti otočení. Naslouchat lze událostem dotyku, uvolnení dotyku a otočení.
+		o směru a rychlosti otočení. Naslouchat lze událostem dotyku, uvolnení dotyku a otočení enkodéru.
 		
 		\subsection{Architektura}
 		Třídy implementující jednotlivé části vrstvy jsou použity ve větších celcích určených rozmístením prvků na hardwarovém kontroleru.
@@ -850,18 +850,18 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		Z pohledu návrhového vzoru MVC\cite{reenskaug1979original} se chovají takové komponenty dohromady jako view a controller. V následujících podkapitolách
 		budou diskutovány jednotlivé komponenty pro řízení části uživatelského rozhraní.
 		
-		\subsection{Komponenty pro ovlání oblasti displeje}\label{sec:display-area-components}
+		\subsection{Komponenty pro ovládání oblasti displeje}\label{sec:display-area-components}
 			Jelikož lze na displeji dobře indikovat aktuální chování přidružených prvků, oblast displeje může být použita pro větší množství obrazovek.
 			V této podkapitole budou diskutovány komponenty pro řízení oblasti displeje. Všechny komponenty pracují s vrstvou poskytující vstupně-výstupní operace s připojeným hardwarovým kontrolerem (viz kapitolu \ref{sec:automap-hw-controller}). Využívají pouze část vrstvy, která poskytuje ovládání prvků oblasti displeje, tedy třídu \texttt{Display\-Region\-Driver}.
 					
 			\subsubsection{ParamMappingContoller}
-				Tato komponenta ovládá pouze jeden řádek oblasti displeje a měla by být tedy použita v rámci komponenty představující celou obrazovku.
+				Tato komponenta ovládá pouze jeden řádek oblasti displeje a měla by být tedy použita v rámci komponenty obsluhující celou obrazovku.
 				Je využitá v třídách \texttt{Instrument\-Detail\-Controller}, \texttt{Effect\-Overview\-Controller} a \texttt{Effect\-Detail\-Controller} implementující obrazovky C2 - C4 (viz kapitoly \ref{sec:C2}, \ref{sec:C3}, \ref{sec:C4}). Zajišťuje chování pro ovládání a indikaci parametrů VST pluginů. Aktuálně ovládané parametry a jejich mapování načítá ze stavu \texttt{Param\-Mapping\-Page\-State}.
-				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích okolo otočných enkodérů a indikuje hodnotu na LED prstenci podle strategie mapování. Též
-				reaguje na události otočného enkoderu. Při jeho otočení podle strategie mapování vyvolá akci aktualizace hodnoty parametru VST pluginu.
+				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích obklopující otočné enkodéry a indikuje hodnotu na LED prstenci podle strategie mapování. Též
+				reaguje na události otočného enkodéru. Při jeho otočení podle strategie mapování vyvolá akci aktualizace hodnoty parametru VST pluginu.
 				Zobrazení na displeji poskytuje standardně název ovládaného parametru, pokud však není nastavený příznak pro trvalé 
 				zobrazení hodnot.
-				Aktuální hodnota ovládaného parametru je zobrazena jen pokud dojde k její změně nebo pokud se uživatel dotkne příslušného otočného enkoderu.
+				Aktuální hodnota ovládaného parametru je pak zobrazena jen pokud dojde k její změně nebo pokud se uživatel dotkne příslušného otočného enkodéru.
 				Formát zobrazení hodnoty na displeji je určen stragetií mapování.
 				Hodnota parametru je zobrazena jen po určitý čas, poté se opět zobrazení vrátí na název ovládaného parametru. 
 				Toto chování je zajištěno netriviální logikou vyjádřenou za použití reaktivního programování a knihovny RxJS.
@@ -869,7 +869,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\subsubsection{LastPresetsController}
 				Podobně jako u třídy \texttt{Param\-Mapping\-Controller} je ovládán pouze jeden řádek oblasti displeje. Na řádku jsou zobrazeny
 				záznamy historie posledních použitých presetů a aktuální preset. Při stisknutí příslušného tlačítka dojde k vyvolání 
-				akce \texttt{Select\-Preset\-Action} určující, který preset má být aktuálně načten. Třída načítá data ze stavu \texttt{Preset\-Session\-State}
+				akce \texttt{Select\-Preset\-Action} určující, který preset má být načten. Třída načítá data ze stavu \texttt{Preset\-Session\-State}
 				pomocí metody \texttt{get\-Current\-History}, jejíž výstup je závislý na aktuální vrstvě. Při změně aktivní vrstvy tedy dojde
 				k zobrazení záznamů historie pro danou vrstvu.
 							
@@ -896,8 +896,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\subsubsection{EffectDetailController}
 				Podobně jako u třídy \texttt{Effect\-Overview\-Controller} je u této třídy využita komponenta \texttt{Effect\-Switch\-Controller},
 				s pomocí které je též indikován stav aktuálně ovládaného efektu. Událost volby efektu je buď 
-				reflektována změnou stavu určením nového aktivního efektu, nebo je uživatel přesměrován na obrazovku souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
-				Zároveň je třídou \texttt{Effect\-Detail\-Controller} využita i komponenta \texttt{Effect\-Overview\-Controller} poskytující
+				reflektována změnou stavu určením nového aktivního efektu, nebo je uživatel přesměrován zpět na obrazovku souhrnného ovládání efektů (viz kapitolu \ref{sec:C3}).
+				Zároveň je třídou \texttt{Effect\-Detail\-Controller} využita i komponenta \texttt{Param\-Mapping\-Controller} poskytující
 				stránku mapování určenou aktuálně ovládaným efektem. Při změně části stavu určující aktuálně ovládaný efekt
 				je vyvolána akce načtení stránky mapování parametrů z daného efektu.
 		
@@ -985,7 +985,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Obsahuje např. komponentu pro zobrazení chybového stavu, obecný dialog pro zadání jména (třída \texttt{Named\-Entity\-Dialog\-Component}) a direktivu pro potvrzení libovolné akce uživatelem (třída \texttt{Confirmation\-Directive}).
 			
 		\subsection{ParamMappingModule}
-			Tento modul poskytuje znovupoužitelnou komponentu \texttt{Param\-Mapping\-Page\-Component} pro správu stránek mapování parametrů VST pluginů. Ta umožňuje přidávat, odebírat a upravovat jednotlivé položky stránky mapování. Pro zadávání názvu položky
+			Tento modul poskytuje znovupoužitelnou komponentu \texttt{Param\-Mapping\-Page\-Component} pro správu stránek mapování parametrů VST pluginů. Ta umožňuje přidávat, odebírat a upravovat jednotlivé položky stránky mapování. Pro zadání názvu položky
 			využívá komponentu \texttt{Named\-Entity\-Dialog\-Component} definovanou v modulu \texttt{SharedModule}.			
 			Pro každou položku umožňuje zvolit strategii mapování. Rozhraní \texttt{Abstract\-Param\-Mapping\-Strategy\-Component} představuje API pro komponenty umožňující konfiguraci konkrétního mapování. Díky této abstrakci lze v budoucnu přidávat jednoduše další 
 			strategie, aniž by bylo potřeba upravovat již existující kód. Návrh tedy splňuje charakteristiky OCP\cite{ocp}.
@@ -1022,7 +1022,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Pro editaci konkrétní stránky mapování je použita komponenta \texttt{Param\-Mapping\-Page\-Component} z modulu \texttt{Param\-Mapping\-Module}.
 		
 		\subsection{EffectModule}
-			Tento modul zahrnuje podobnou funkcionalitu jako modul \texttt{Instrument\-Module}, pracuje však s virtuálními efekty místo virtuálních nástrojů.
+			Tento modul zahrnuje podobnou funkcionalitu jako modul \texttt{Instrument\-Module}, pracuje však s virtuálními efekty namísto virtuálních nástrojů.
 			Komponenta \texttt{Effect\-List\-Page\-Component} zajišťuje zobrazení seznamu dostupných efektů, oproti komponentě \texttt{Instrument\-List\-Page\-Component} přináší informaci o umístění efektu.
 			
 			Komponent \texttt{Effect\-Param\-Mapping\-Page\-Component} využívá podobně jako komponenta \texttt{Instrument\-ParamMapping\-Page\-Component} pro editaci stránky mapování komponentu \texttt{ParamMapping\-Page\-Component} z modulu \texttt{Param\-Mapping\-Module}. Jelikož efekt nemůže obsahovat více stránek mapování, chybí správa jednotlivých stránek, je však možné vybrat hlavní položku stránky mapování pro daný efekt.
@@ -1031,10 +1031,10 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			V modulu \texttt{Preset\-Module} je implementována funkcionalita pro práci s presety.
 			
 			Komponenta \texttt{Preset\-List\-Page\-Component} slouží ke správě kategorií presetů a presetů v rámci zvolené kategorie.
-			Umožňuje přidávat, řadit, editovat a mazat kategorie presetů a samotné presety. Pro zadávání názvu kategorií a nových presetů je využita komponenta \texttt{Named\-Entity\-Dialog} z modulu \texttt{SharedModule}. Řazení položek je implementováno s pomocí komponenty \texttt{Drag\-Drop\-Module} z knihovny Angular Material.
+			Umožňuje přidávat, řadit, editovat a mazat kategorie presetů i samotné presety. Pro zadávání názvu kategorií a nových presetů je využita komponenta \texttt{Named\-Entity\-Dialog} z modulu \texttt{SharedModule}. Řazení položek je implementováno s pomocí komponenty \texttt{Drag\-Drop\-Module} z knihovny Angular Material.
 
 			Informace o aktuálním presetu a kategorii presetu jsou synchronizovány se stavem aplikace za použití knihovny NGXS.
-			Tyto informace závisí na aktuálně zvolené vrstvě. Jelikož je stav sdílený a jeho editace je možná z prostředí dekstopové aplikace i hardwarového kontroleru, je stav desktopového uživatelského rozhraní v tomto případě automaticky synchronizován s uživatelským rozhraním hardwarového kontroleru.
+			Tyto informace závisí na aktuálně zvolené vrstvě. Jelikož je stav sdílený a jeho editace je možná z prostředí desktopové aplikace i hardwarového kontroleru, je stav desktopového uživatelského rozhraní v tomto případě automaticky synchronizován s uživatelským rozhraním hardwarového kontroleru.
 			
 			Třída \texttt{Preset\-Detail\-Page\-Component} představuje komponentu pro úpravu konfigurace presetu.
 			Umožňuje zvolit jméno presetu, použitý virtuální nástroj a uloženou stránku mapování parametrů virtuálního nástroje.
@@ -1058,19 +1058,19 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Zpracování informací z třídy \texttt{BiduleLayout} implementuje třída \texttt{Bidule\-Layou\-tReader}.
 			Ta z poskytuntého objektu odešle příslušné akce za pomoci knihovny NGXS a aktualizuje tak sdílenou část stavu implementovanou ve třídě \texttt{VSTState}.
 			
-			Inicializaci a indikaci načítání projektu implementuje třída \texttt{Bidule\-Layout\-Opener}. Přes protokol OSC do programu Bidule odesílá příkaz pro otevření projektu ze souboru zadaného v argumentu. V pravidelném intervalu pak odesílá OSC zprávy pro ověření, zda již bylo načítání projektu v programu Bidule dokončeno. V takovém případě program Bidule odpoví a aplikace rozliší, zda došlo k chybě nebo úspěšnému načtení projektu.			
+			Inicializaci a indikaci načítání projektu poskytuje třída \texttt{Bidule\-Layout\-Opener}. Přes protokol OSC do programu Bidule odesílá příkaz pro otevření projektu ze souboru zadaného v argumentu. V pravidelném intervalu pak odesílá OSC zprávy pro ověření, zda již bylo načítání projektu v programu Bidule dokončeno. V takovém případě program Bidule odpoví a aplikace rozliší, zda došlo k chybě, nebo úspěšnému načtení projektu.			
 
 		\section{Ukládání a načítání konfigurace}
 			Perzistence konfigurace aplikace pracuje se snímkem aktuálního stavu aplikace za pomoci knihovny NGXS.
 			Třída \texttt{State\-Persister\-Plugin} implementuje zásuvný modul pro knihovnu NGXS, který jednotlivé části stavu serializuje do formátu JSON a ukládá je do souborů. Perzistence probíhá na globální nebo lokální úrovni, kde je konfigurace uložena pro každý projekt zvlášť. Třída \texttt{State\-Loader\-Handler} zajišťuje načítání uložené konfigurace po inicializaci aplikace, nebo po načtení projektu.
 			
-			K uložení informací slouží vyvolání akce \texttt{Persist\-State\-Action}. K tomu dochází automaticky v daném intervalu, nebo přes desktopového uživatelského rozhraní.
+			K uložení informací slouží vyvolání akce \texttt{Persist\-State\-Action}. K tomu dochází automaticky v daném časovém intervalu, nebo přes desktopového uživatelského rozhraní.
 
 
 \chapter{Testování}
 	Testování probíhalo pouze na úrovni uživatelského rozhraní. V rámci aplikace nejsou zahrnuty jednotkové ani integrační testy.
-	V rámci testování uživatelského rozhraní byla provedena heuristická analýza dle Jakoba Nielsena\cite{nielsen-heuristics}. Zároveň byly provedeny uživatelské testy.
-	Uplatněné metody testování uživatelského rozhraní jsou rozebrány v následujících podkapitolách.
+	Testování uživatelského rozhraní bylo provedeno s pomocí heuristické analýzy dle Jakoba Nielsena\cite{nielsen-heuristics}. Zároveň byly provedeny uživatelské testy.
+	Podrobné informace o testování uživatelského rozhraní jsou rozebrány v následujících podkapitolách.
 
 	\section{Heuristická analýza}
 		\subsection{Visibility of system status - Viditelnost stavu systému}
@@ -1084,10 +1084,10 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{Match between system and the real world - Shoda mezi systémem a reálným světem}\label{sec:heuristics-2}
 			Terminologie využitá v aplikaci se běžně používá v prostředí elektronických hudebních nástrojů a studiové tvorby. Pro zkušenějšího uživatele by neměl být problém se v uživatelském rozhraní zorientovat. 
 			Standartní chování je implementováno např. u funkce learn, kdy dochází ke změně konfigurace v prostředí třetí strany.
-			Uživatelské prostředí hardwarového kontroleru pracuje pouze uživatelem definovanými názvy.
+			Uživatelské prostředí hardwarového kontroleru pracuje pouze s názvy definovanými uživatelem.
 			
 		\subsection{User control and freedom - Ovládání a svoboda}
-			U desktopového uživatelského rozhraní lze učinit krok zpět v případě editace konfigurace, dialogu pro zadávání názvu, obrazovky načítání projektu apod. V rozhraní není zahrnuto obecné tlačítko pro krok zpět, tzv. undo. Díky použití knihovny NGXS představující framework pro správu stavu aplikace by byla implementace takového tlačítka jednoduchou úpravou.
+			U desktopového uživatelského rozhraní lze učinit krok zpět v případě editace konfigurace, dialogu pro zadávání názvu, obrazovky načítání projektu apod. V rozhraní není zahrnuto obecné tlačítko pro krok zpět, tzv. undo. Díky použití knihovny NGXS představující framework pro správu stavu aplikace by implementace takového tlačítka znamenala jednoduchou úpravu.
 			
 			Jelikož je v rámci uživatelského rozhraní hardwarového kontroleru předpoklad, že uživatel bude systém ovládat úderně stručnými a frekventovanými akcemi, nebyla zde funkce pro krok zpět implementována. Výjimku představuje historie naposledy použitých presetů, kdy se lze při chybné volbě presetu rychle vrátit zpět, nebo si navolit předem více presetů.
 			
@@ -1104,12 +1104,12 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{Recognition rather than recall - Rozpoznání místo vzpomínání}
 			V rámci desktopového uživatelského rozhraní jsou všechny prvky zřetelně označeny. U obrazovky editace presetu by mohla být lépe vyřešena volba stránky mapování parametrů tak, aby bylo možné přímo přejít na tvorbu nové stránky mapování.
 			
-			Rozhraní uživatelského rozhraní neposkytuje popis aktuální obrazovky, uživatel se může orientovat jen podle LED podsvícení tlačítka nebo detailů zobrazených v rámci aktuální obrazovky. V tomto ohledu není kritérium splněno, u hudebního nástroje se však předpokládá velmi časté užívání, díky kterému si lze jednoduché akce zapamatovat poměrně snadno a rychle. U velké části MIDI kontrolerů není aktuální stav indikován žádným způsobem, u tohoto řešení je aktuální stav aplikace zobrazen za použití LED podsvícení a displeje.
+			Uživatelské rozhraní hardwarového kontroleru neposkytuje popis aktuální obrazovky, uživatel se může orientovat jen podle LED podsvícení tlačítek pro navigaci nebo detailů zobrazení v oblasti displeje. V tomto ohledu není kritérium splněno, u hudebního nástroje se však předpokládá velmi časté užívání, díky kterému si lze jednoduché akce zapamatovat poměrně snadno a rychle. U velké části MIDI kontrolerů není aktuální stav indikován žádným způsobem, u tohoto řešení je aktuální stav aplikace zobrazen za použití LED podsvícení a displeje.
 			
 		\subsection{Flexibility and efficiency of use - Flexibilní a efektivní použití}
-			U desktopového uživatelského rozhraní je k dispozici tlačítko pro duplikaci presetů a stránek mapování parametrů pro vyšší efektivitu při editaci konfigurace. Zadávání hodnot parametrů VST pluginů usnadňuje též tzv. funkce learn, díky které lze hodnoty určit jednoduše přímo v prostředí VST pluginu.
+			U desktopového uživatelského rozhraní je k dispozici tlačítko pro duplikaci presetů a stránek mapování parametrů pro zvýšení efektivity při editaci konfigurace. Zadávání hodnot parametrů VST pluginů usnadňuje též tzv. funkce learn, díky které lze hodnoty určit jednoduše přímo v prostředí VST pluginu.
 			
-			Jedním z požadavků na uživatelské rozhraní hardwarového kontroleru je právě efektivita použití, celé uživatelské rozhraní je tedy navrženo pro dosažení vysoké efektivity ovládání. Výsledná efektivita je též silně ovlivněna konfigurací zadanou uživatelem.
+			Jedním z požadavků na uživatelské rozhraní hardwarového kontroleru je právě efektivita použití, celé uživatelské rozhraní je tedy navrženo pro dosažení vysoké ergonomie ovládání. Výsledná efektivita je též silně ovlivněna konfigurací zadanou uživatelem.
 		
 		\subsection{Aesthetic and minimalist design - Estetický a minimalistický design}
 			Desktopové uživatelské rozhraní disponuje jednoduchým designem za použití frameworku Angular Material. Tento framework je často používaný při tvorbě webových a mobilních aplikací, uživatel by neměl mít problémy s orientací. Jednotlivé obrazovky obsahují jen relevantní prvky.
@@ -1122,7 +1122,9 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Na displeji hardwarového kontroleru nejsou zobrazovány žádné chyby.
 
 		\subsection{Help and documentation - Nápověda a návody}
-			Pro uživatele může být těžké se v aplikaci zorientovat, jelikož aplikace neposkytuje žádné nápovědy ani legendy. V případě hardwarového kontroleru není zahrnuta žádná nápověda. Vhodné by bylo poskytnout uživatelskou příručku, případně audiovizuálního průvodce.
+			Pro uživatele může být těžké se v aplikaci zorientovat, jelikož aplikace neposkytuje žádné nápovědy ani legendy. V případě hardwarového kontroleru není zahrnuta žádná nápověda. 
+			Pro lepší orientaci uživatele by mohla být aplikace doplněna o použití tzv. tooltip prvků, kdy je nápověda zobrazena při umístení kurzoru nad ovládací prvek.
+			Vhodné by bylo také poskytnout uživatelskou příručku, případně audiovizuálního průvodce.
 		
 	\section{Uživatelské testování}
 		\subsection{Testovací scénář}
@@ -1137,20 +1139,30 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				
 			Poté prostřednictvím hardwarového kontroleru proveďte následující kroky:
 			\begin{enumerate}
-				\item Zvolte preset.
-				\item Změňte parametr virtuálního nástroje.
-				\item Přepněte na druhou vrstvu a zvolte jiný preset.
-				\item Změňte jakýkoliv parametr některého globálního efektu.
+				\item Zvolte nově vytvořený preset.
+				\item Změňte hodnotu parametru virtuálního nástroje.
+				\item Přepněte na druhou vrstvu a vyberte jiný preset.
+				\item Změňte jakýkoliv parametr některého z globálních efektů.
 				\item Na první vrstvě přepněte na libovolný preset.
-				\item Přepněte na druhou vrstvu a změňte parametr nástroje.
-				\item Na první vrstvě načtěte původní preset.
+				\item Přepněte na druhou vrstvu a změňte hodnotu parametru virtuálního nástroje.
+				\item Na první vrstvě načtěte původní preset z historie.
 			\end{enumerate}
 		
 		\subsection{Uživatel č. 1}
 		\subsection{Uživatel č. 2}
 		\subsection{Uživatel č. 3}
 \begin{conclusion}
-	%sem napište záver Vaší práce
+	Cílem této práce bylo vytvoření prostředí pro živou hudební produkci za použití virtuálních hudebních nástrojů.
+	
+	Nejprve byla provedena analýza požadavků a průzkum existujících řešení. Na základě analýzy bylo navrženo
+	vlastní řešení kombinující počítač a připojený kontroler s prezentačními prvky. Aplikace podle návrhu propojuje hardwarový kontroler a tzv. VST host prostředí, které zajišťuje provoz virtuálních nástrojů a zpracování zvukového signálu. V rámci analýzy byly též provedeny testy kompatibility jednotlivých komponent. Ve fázi návrhu byl také vytvořen doménový model aplikace a drátěné modely uživatelského rozhraní desktopové aplikace a hardwarového kontroleru.
+	
+	V rámci implementace bylo ve velké míře využito reaktivní programování. Vznikla vrstva pro nízkoúrovňovou komunikaci s USB MIDI zařizeními a komunikaci přes protokol Automap vč. ovladače uživatelského rozhraní hardwarového kontroleru.
+	Testování výsledné aplikace probíhalo pouze na úrovni uživatelských testů za účasti vybraných hudebníků.
+	
+	Výsledná aplikace splňuje požadované vlastnosti a celé prostředí lze použít v praxi pro živá hudební vystoupení. Aplikace by dále mohla být rozšířena o pokročilejší funkce užitečné při vystoupení hudebníka. Zároveň by bylo vhodné doplnit uživatelské rozhraní desktopové aplikace o nápovědu.
+	
+	
 \end{conclusion}
 
 \bibliographystyle{csn690}
