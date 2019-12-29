@@ -369,7 +369,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\caption{Doménový model}\label{fig:DomainModel}
 		\end{figure}		
 
-	\section{Struktura projektu Bidule}
+	\section{Struktura projektu Bidule}\label{sec:bidule-components}
 		Aby mohly být projekty uložené v programu Bidule načteny ve vlastní aplikaci, je třeba definovat strukturu
 		projektů. Projekt vytvořený v programu Bidule se skládá z modulů, které jsou uspořádány do stromové struktury
 		a jsou vzájemně propojeny. Modulem může být např. VST plugin, vstupně-výstupní rozhraní pro audio nebo MIDI.
@@ -629,7 +629,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		\subsection{Synchronizace přes IPC}
 			Pro klientskou i serverovou část byly implementovány třídy \texttt{IpcActionReceiver} a 
-			\texttt{IpcActionTransmitterPlugin}. Třída \texttt{IpcActionTransmitterPlugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií  akcí vyvolaných přes NGXS framework	druhé straně aplikace. K příjmu zprávy slouží třída \texttt{IpcActionReceiver}, která akci předá
+			\texttt{IpcActionTransmitterPlugin}. Třída \texttt{IpcActionTransmitterPlugin} implementuje NGXS API pro tvorbu pluginů a zajišťuje zasílání kopií akcí vyvolaných přes NGXS framework druhé straně aplikace. K příjmu zprávy slouží třída \texttt{IpcActionReceiver}, která akci předá
 			NGXS frameworku tak, že simuluje lokální vyvolání dané akce. Zprávy jsou serializovány do formátu JSON a k jejich přenosu dochází
 			za použití IPC API frameworku Electron.
 		
@@ -856,7 +856,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\subsubsection{Třída ParamMappingContoller}
 				Tato komponenta ovládá pouze jeden řádek oblasti displeje a měla by být tedy použita v rámci komponenty představující celou obrazovku.
 				Je využitá v třídách \texttt{InstrumentDetailController}, \texttt{EffectOverviewController} a \texttt{EffectDetailController} implementující obrazovky C2 - C4 (viz kapitoly \ref{sec:C2}, \ref{sec:C3}, \ref{sec:C4}). Zajišťuje chování pro ovládání a indikaci parametrů VST pluginů. Aktuálně ovládané parametry a jejich mapování načítá ze stavu \texttt{ParamMappingPageState}.
-				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích okolo otočných enkoderů a indikuje hodnotu na LED prstenci podle strategie mapování. Též
+				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích okolo otočných enkodérů a indikuje hodnotu na LED prstenci podle strategie mapování. Též
 				reaguje na události otočného enkoderu. Při jeho otočení podle strategie mapování vyvolá akci aktualizace hodnoty parametru VST pluginu.
 				Zobrazení na displeji poskytuje standardně název ovládaného parametru, pokud však není nastavený příznak pro trvalé 
 				zobrazení hodnot.
@@ -1046,13 +1046,89 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Při přidání nové inicializační strategie stačí implementovat komponentu, která bude obsahovat logiku pro aktualizaci stavu.
 			
 		
-	\section{Perzistence dat}
+	\section{Datová vrstva aplikace}
+		Funkce datové vrstvy je z pohledu třívrstvé architektury částečně implementována díky knihovně NGXS pro správu stavu aplikace.
+		V následujících podkapitolách bude probrána perzistence dat.
+	
+		\section{Import projektů Bidule}
+			Jelikož je třeba pro každý projekt programu Bidule pracovat s jeho konfigurací, bylo nutné implementovat možnost importu konfigurace projektu do aplikace. Veškeré potřebné informace jsou uloženy v souboru projektu ve formátu XML. K načtení
+			informací z formátu XML byl použitý framework \texttt{xml2js}. 
+			
+			Třída \texttt{BiduleLayoutParser} zajišťuje načtení projektu podle architektury popsané v kapitole \ref{sec:bidule-components}.
+			Načítá dostupné manuály a vrstvy, virtuální nástroje a efekty,
+			a vytváří třídu \texttt{BiduleLayout}, která tyto informace obsahuje.
+			
+			Zpracování informací z třídy \texttt{BiduleLayout} implementuje třída \texttt{BiduleLayoutReader}.
+			Ta z poskytuntého objektu odešle příslušné akce za pomoci knihovny NGXS a aktualizuje tak sdílenou část stavu implementovanou ve třídě \texttt{VSTState}.
+			
+			Inicializaci a indikaci načítání projektu implementuje třída \texttt{BiduleLayoutOpener}. Přes protokol OSC do programu Bidule odesílá příkaz pro otevření projektu ze souboru zadaného v argumentu. V pravidelném intervalu pak odesílá OSC zprávy pro ověření, zda již bylo načítání projektu v programu Bidule dokončeno. V takovém případě program Bidule odpoví a aplikace rozliší, zda došlo k chybě nebo úspěšnému načtení projektu.			
 
-		- import dat z bidule
-		- ukladani dat
+		\section{Ukládání a načítání konfigurace}
+			Perzistence konfigurace aplikace pracuje se snímkem aktuálního stavu aplikace za pomoci knihovny NGXS.
+			Třída \texttt{StatePersisterPlugin} implementuje zásuvný modul pro knihovnu NGXS, který jednotlivé části stavu serializuje do formátu JSON a ukládá je do souborů. Perzistence probíhá na globální nebo lokální úrovni, kde je konfigurace uložena pro každý projekt zvlášť. Třída \texttt{StateLoaderHandler} zajišťuje načítání uložené konfigurace po inicializaci aplikace, nebo po načtení projektu.
+			
+			K uložení informací slouží vyvolání akce \texttt{PersistStateAction}. K tomu dochází automaticky v daném intervalu, nebo přes desktopového uživatelského rozhraní.
 
 
 \chapter{Testování}
+	Testování probíhalo pouze na úrovni uživatelského rozhraní. V rámci aplikace nejsou zahrnuty jednotkové ani integrační testy.
+	V rámci testování uživatelského rozhraní byla provedena heuristická analýza dle Jakoba Nielsena\cite{nielsen-heuristics}. Zároveň byly provedeny uživatelské testy.
+	Uplatněné metody testování uživatelského rozhraní jsou rozebrány v následujících podkapitolách.
+
+	\section{Heuristická analýza}
+		\subsection{Visibility of system status - Viditelnost stavu systému}
+			V uživatelském prostředí desktopové aplikace uživatel vidí aktuální stav navigace.
+			Při načítání projektu programu Bidule je zobrazen tzv. spinner,	který značí, že se projekt stále načítá.
+			Je-li právě otevřený nějaký projekt, v hlavní liště je též zobrazena aktuální vrstva a manuál. 
+			V rámci uživatelského rozhraní jednotlivých obrazovek je též indikován aktuální stav systému. U tzv. learn funkce je např. indikována aktuální hodnota parametru a je možné naslouchání novým hodnotám zastavit. V seznamu presetů je zvýrazněn aktuální preset.
+			Kritérium viditelnosti systému desktopové uživatelské rozhraní splňuje.
+			
+			U hardwarového kontroleru je zobrazena volba aktuální obrazovky s pomocí LED podsvícení tlačítek, uživatel však nevidí textové vyjádření aktuální obrazovky. Aktuální manuál a vrstva jsou indikovány LED podsvícením u tlačítek představujících jednotlivé manuály. U jednotlivých obrazovek je též indikován aktuální stav pokud je to možné. Stav aplikace je převážně vyjádřen na LED prstencích umístěných okolo otočných enkodérů a LED podsvícením tlačítek.			
+		\subsection{Match between system and the real world - Shoda mezi systémem a reálným světem}\label{sec:heuristics-2}
+			Terminologie využitá v aplikaci se běžně používá v prostředí elektronických hudebních nástrojů a studiové tvorby. Pro zkušenějšího uživatele by neměl být problém se v uživatelském rozhraní zorientovat. 
+			Standartní chování je implementováno např. u funkce learn, kdy dochází ke změně konfigurace v prostředí třetí strany.
+			Uživatelské prostředí hardwarového kontroleru pracuje pouze uživatelem definovanými názvy.
+			
+		\subsection{User control and freedom - Ovládání a svoboda}
+			U desktopového uživatelského rozhraní lze učinit krok zpět v případě editace konfigurace, dialogu pro zadávání názvu, obrazovky načítání projektu apod. V rozhraní není zahrnuto obecné tlačítko pro krok zpět, tzv. undo. Díky použití knihovny NGXS představující framework pro správu stavu aplikace by byla implementace takového tlačítka jednoduchou úpravou.
+			
+			Jelikož je v rámci uživatelského rozhraní hardwarového kontroleru předpoklad, že uživatel bude systém ovládat úderně stručnými a frekventovanými akcemi, nebyla zde funkce pro krok zpět implementována. Výjimku představuje historie naposledy použitých presetů, kdy se lze při chybné volbě presetu rychle vrátit zpět, nebo si navolit předem více presetů.
+			
+		\subsection{Consistency and standards - Konzistence a standardizace}
+			Toto kritérium v případě této aplikace splývá s kritériem shody mezi systémem a reálným světem (viz kapitolu \ref{sec:heuristics-2}).
+		
+		\subsection{Error prevention - Prevence chyb}
+			V desktopovém uživatelském rozhraní se uplatňuje prevence chyb např. ve formulářích formou validace formulářových prvků, zakázáním akcí pro nedostupné VST pluginy apod. Položky hlavního menu aplikace se mění dynamicky dle stavu aplikace.
+			
+			Jelikož uživatelské rozhraní hardwarového kontroleru musí být velmi stabilní, není zde připuštěno zobrazení chybové hlášky. Zamezení vstupu do neplatného stavu je provedeno přes odebrání možnosti stisku tlačítek.
+			V rámci uživatelského rozhraní se pracuje pouze s daty, ze kterých byly odstraněny nerelevantní položky
+			(např. nedostupné VST pluginy).
+					
+		\subsection{Recognition rather than recall - Rozpoznání místo vzpomínání}
+			V rámci desktopového uživatelského rozhraní jsou všechny prvky zřetelně označeny. U obrazovky editace presetu by mohla být lépe vyřešena volba stránky mapování parametrů tak, aby bylo možné přímo přejít na tvorbu nové stránky mapování.
+			
+			Rozhraní uživatelského rozhraní neposkytuje popis aktuální obrazovky, uživatel se může orientovat jen podle LED podsvícení tlačítka nebo detailů zobrazených v rámci aktuální obrazovky. V tomto ohledu není kritérium splněno, u hudebního nástroje se však předpokládá velmi časté užívání, díky kterému si lze jednoduché akce zapamatovat poměrně snadno a rychle. U velké části MIDI kontrolerů není aktuální stav indikován žádným způsobem, u tohoto řešení je aktuální stav aplikace zobrazen za použití LED podsvícení a displeje.
+			
+		\subsection{Flexibility and efficiency of use - Flexibilní a efektivní použití}
+			U desktopového uživatelského rozhraní je k dispozici tlačítko pro duplikaci presetů a stránek mapování parametrů pro vyšší efektivitu při editaci konfigurace. Zadávání hodnot parametrů VST pluginů usnadňuje též tzv. funkce learn, díky které lze hodnoty určit jednoduše přímo v prostředí VST pluginu.
+			
+			Jedním z požadavků na uživatelské rozhraní hardwarového kontroleru je právě efektivita použití, celé uživatelské rozhraní je tedy navrženo pro dosažení vysoké efektivity ovládání. Výsledná efektivita je též silně ovlivněna konfigurací zadanou uživatelem.
+		
+		\subsection{Aesthetic and minimalist design - Estetický a minimalistický design}
+			Desktopové uživatelské rozhraní disponuje jednoduchým designem za použití frameworku Angular Material. Tento framework je často používaný při tvorbě webových a mobilních aplikací, uživatel by neměl mít problémy s orientací. Jednotlivé obrazovky obsahují jen relevantní prvky.
+			
+			Hardwarový kontroler poskytuje pouze velmi omezené možnosti pro tvorbu uživatelského rozhraní. Navržené rozhraní proto jednoduše splňuje toto kritérium. 
+		
+		\subsection{Help users recognize, diagnose, and recover from errors - Schopnost zotavení z chyb}
+			V rámci desktopového uživatelského rozhraní je u formulářových prvků zobrazen popis chyby. Obecná chyba je zobrazena s pomocí modálního okna, nebo samostatné stránky. Veškeré chyby jsou zobrazeny v přirozeném jazyce.
+			
+			Na displeji hardwarového kontroleru nejsou zobrazovány žádné chyby.
+
+		\subsection{Help and documentation - Nápověda a návody}
+			Pro uživatele může být těžké se v aplikaci zorientovat, jelikož aplikace neposkytuje žádné nápovědy ani legendy. V případě hardwarového kontroleru není zahrnuta žádná nápověda. Vhodné by bylo poskytnout uživatelskou příručku, případně audiovizuálního průvodce.
+		
+	\subsection{Uživatelské testování}
+
 
 \begin{conclusion}
 	%sem napište záver Vaší práce
