@@ -1082,7 +1082,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			U hardwarového kontroleru je zobrazena volba aktuální obrazovky s pomocí LED podsvícení tlačítek, uživatel však nevidí textové vyjádření aktuální obrazovky. Aktuální manuál a vrstva jsou indikovány LED podsvícením u tlačítek představujících jednotlivé manuály. U jednotlivých obrazovek je též indikován aktuální stav pokud je to možné. Stav aplikace je převážně vyjádřen na LED prstencích umístěných okolo otočných enkodérů a LED podsvícením tlačítek.			
 		\subsection{Match between system and the real world - Shoda mezi systémem a reálným světem}\label{sec:heuristics-2}
 			Terminologie využitá v aplikaci se běžně používá v prostředí elektronických hudebních nástrojů a studiové tvorby. Pro zkušenějšího uživatele by neměl být problém se v uživatelském rozhraní zorientovat. 
-			Standartní chování je implementováno např. u funkce learn, kdy dochází ke změně konfigurace v prostředí třetí strany.
+			Standardní chování je implementováno např. u funkce learn, kdy dochází ke změně konfigurace v prostředí třetí strany.
 			Uživatelské prostředí hardwarového kontroleru pracuje pouze s názvy definovanými uživatelem.
 			
 		\subsection{User control and freedom - Ovládání a svoboda}
@@ -1096,7 +1096,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{Error prevention - Prevence chyb}
 			V desktopovém uživatelském rozhraní se uplatňuje prevence chyb např. ve formulářích formou validace formulářových prvků, zakázáním akcí pro nedostupné VST pluginy apod. Položky hlavního menu aplikace se mění dynamicky dle stavu aplikace.
 			
-			Jelikož uživatelské rozhraní hardwarového kontroleru musí být velmi stabilní, není zde připuštěno zobrazení chybové hlášky. Zamezení vstupu do neplatného stavu je provedeno přes odebrání možnosti stisku tlačítek.
+			Jelikož uživatelské rozhraní hardwarového kontroleru musí být velmi stabilní, není zde připuštěno zobrazení chybové hlášky. Zamezení vstupu do neplatného stavu je provedeno přes odepření možnosti stisku tlačítek.
 			V rámci uživatelského rozhraní se pracuje pouze s daty, ze kterých byly odstraněny nerelevantní položky
 			(např. nedostupné VST pluginy).
 					
@@ -1127,7 +1127,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			
 		\subsection{Zhodnocení}
 			Mezi problémy, se kterými by se mohl uživatel setkat, patří horší orientace v prostředí hardwarového kontroleru způsobená
-			 absencí jasné indikace stavu systému a funkce ovládacích prvků. Uživatel si pravděpodobně bude muset zapamataovat funkce jednotlivých ovládacích prvků na globální úrovni i na úrovni jednotlivých obrazovek, jelikož účel ovládacích prvků nelze ze zobrazených údajů jasně odhadnout.
+			 absencí jasné indikace stavu systému a funkce ovládacích prvků. Uživatel si musí zapamataovat funkce jednotlivých ovládacích prvků na globální úrovni i na úrovni jednotlivých obrazovek, jelikož účel ovládacích prvků nelze ze zobrazených údajů jasně určit.
 			Zároveň není k dispozici náhled na globální stav systému, uživatel vždy vidí jen část stavu (např. na základě aktuálně zvolené vrstvy), což pro něj může být matoucí.
 			U desktopové aplikace se může uživatel ztratit kvůli absenci nápovědy.
 		
@@ -1175,11 +1175,11 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Druhá část scénáře - hardwarový kontroler.
 			\begin{enumerate}
 				\item Uživatel správně zvolil nově vytvořený preset.
-				\item Uživatel přepnul zobrazení na správnou obrazovku, ale zvolil jiný preset z historie. To bylo pro něj matoucí a nevěděl, jak se vrátit do předchozího stavu. Volbu požadovaného nástroje vyřešil rychle postupem z předchozího kroku.
+				\item Uživatel přepnul zobrazení na správnou obrazovku, ale zvolil jiný preset z historie. To bylo pro něj matoucí a nevěděl, jak se vrátit do předchozího stavu. Volbu požadovaného nástroje vyřešil rychle opakováním postupu z předchozího kroku.
 				Poté již uživatel nevěděl, kde nastavení najde a přepl na obrazovku pro ovládání vstupních efektů vrstvy, o které se domníval, že slouží k ovládání globálních efektů. Rychle si však chybu uvědomil, přepl znovu na správnou obrazovku a v pořádku změnil hodnotu parametru virtuálního nástroje.
 				\item Dvojklik provedený uživatelem byl moc pomalý. Při druhém pokusu již došlo k přepnutí na správnou vrstvu.
 				Volba presetu proběhla bez problémů. Uživatel též ovládal hlasitosti vrstev, kde pro něj bylo matoucí použití statických knobů.
-				\item Uživatel si spltel pojmy globální efekt a efekt pro vrstvu. Místo globálního efektu nastavil hodnotu lokálního efektu. Jelikož v té době byl preset na první vrstvě zeslabený, nevyjádřil údiv.
+				\item Uživatel si spletl pojmy globální efekt a efekt pro vrstvu. Místo globálního efektu nastavil hodnotu parametru lokálního efektu. Jelikož v té době byla první vrstva zeslabená, nevyjádřil údiv.
 				\item Uživatel správně provedl přepnutí presetu.
 				\item Při volbě vrstvy nejprve uživatel provedl dvojklik opět moc pomalu. Změna parametru nástroje proběhla bez problému.
 				\item U posledního kroku uživatel zapomněl zvolit ovládanou vrstvu. Navíc zvolil obrazovku pro výběr presetů namísto obrazovky ovládání parametrů nástroje, ve které je zahrnuta historie presetů. Svji chybu si rychle uvědomil a napravil, byl ale zmatený, jelikož ovládaná vrstva byla zeslabená a tak se zdálo, že se akce nijak neprojevila.
@@ -1228,7 +1228,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 					\item Uživatel správně zvolil kategorii, ale byl zmatený ořezáním příliš dlouhého názvu presetu. Nevhodný znak šipky indikující ořezání navíc u uživatele vytvořil mylný dojem, že lze seznam posunout. Uživatel měl navíc problém s oddělením ovládání kategorií a presetů.
 					\item V druhém kroku měl uživatel problém s přepnutím na požadovanou obrazovku, jelikož si způsob ovládání pamatoval pouze matně. Se změnou hodnoty parametru nástroje pak neměl problém. 
 					\item Uživatel si vybavil způsob ovládání aktuální vrstvy, ale měl problém s přepnutím na obrazovku pro volbu presetu. Samotná volba presetu pak již proběhla v pořádku.
-					\item Uživatel si ihned vybavil způsob přepnutí na obrazovku efektů. Měl však problém s vícenásobným kliknutím, které nebylo provedeno s dostatečnou rychlostí.
+					\item Uživatel si ihned vybavil způsob přepnutí na obrazovku efektů. Měl však problém s vícenásobným stisknutím tlačítka, které nebylo provedeno s dostatečnou rychlostí.
 					\item S přepnutím presetu na první vrstvě neměl uživatel problémy.
 					\item Uživatel postupoval nejistě ve strachu, že způsobí neočekávanou změnu. Nakonec však krok změny parametru nástroje provedl správně.
 					\item Uživatel měl problémy s využitím historie použitých presetů. Nepamatoval si, jak funkce funguje, a krok nedokončil.
@@ -1255,16 +1255,16 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				Problém lze vyřešit triviálně nastavením delšího časového okénka při zpracovávání stisknutí tlačítek.
 				
 			\subsubsection{Omezená indikace stavu}
-				V rámci provádění testovacího scénáře měli uživatelé často problém se určením stavu systému. Stav je v omezené míře indikován, uživatel však neví, jaký mají informace význam. Tento problém byl zjištěn již při heuristické analýze, je však způsobený krátkou dobou používání systému a lze tak předpokládat, že při intenzivnějším používání systému problém přestane být aktuální.
+				V rámci provádění testovacího scénáře měli uživatelé často problém s určením stavu systému. Stav je v omezené míře indikován, uživatel však neví, jaký mají informace význam. Tento problém byl zjištěn již při heuristické analýze, je však způsobený krátkou dobou používání systému a lze tak předpokládat, že při intenzivnějším používání systému problém přestane být aktuální.
 				
 				Chybí však možnost hromadného zobrazení aktuálních presetů pro všechny vrstvy a další souhrnná zobrazení celého stavu systému.
 				
-				Úpravou pro lepší orientaci uživatele by mohlo být zavedení obrazovky pro zobrazení souhrnných informací.
+				Úpravou pro lepší orientaci uživatele by mohlo být zavedení obrazovky pro souhrnné zobrazení  informací.
 				
 			\subsection{Určení funkce ovládacích prvků}
-				Podobně jako u problému omezené indikace stavu způsobeného absencí popisu zobrazované informace, dochází k problému i u určení účelu ovládacích prvků.
+				Podobně jako u problému omezené indikace stavu způsobeného absencí popisu zobrazované informace, dochází k problému i při určení účelu ovládacích prvků.
 				
-				Jednoduchým řešení je doplnění nápovědy přímo na povrch hardwarového kontroleru.
+				Jednoduchým řešením je doplnění nápovědy přímo na povrch hardwarového kontroleru.
 			
 			\subsection{Nevhodný znak pro indikaci ořezání názvů}
 				Na displeji kontroleru lze použít pouze omezenou sadu znaků. Znak vlnovky, který je použitý pro indikaci ořezání názvu, kontroler neumí zobrazit. 
@@ -1272,7 +1272,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				Řešením je použití jiného znaku vhodného pro indikaci ořezání názvu, který bude možné zobrazit na displeji hardwarového kontroleru.
 				
 			\subsection{Konzistence přepínání presetů}
-				Problém nastává při přepínání presetů. Uživatel je zmatený, jelikož může preset vybrat buď z obrazovky přepínání presetů, nebo z obrazovky ovládání parametrů v rámci načítání záznamů historie.
+				Problém nastává při přepínání presetů. Uživatel je zmatený, jelikož může preset vybrat buď z obrazovky přepínání presetů, nebo z obrazovky ovládání parametrů načítáním záznamu historie.
 				
 				Jelikož systém cílí na dlouhodobé uživatele a počítá s křivkou učení, bylo toto chování navrženo záměrně. V praxi přinese velkou výhodu možnost rychlého přepínání presetů přímo ze stránky ovládání parametrů nástroje.
 				
@@ -1442,14 +1442,13 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 
 \begin{figure}
 	\dirtree{%
-		.1 readme.txt\DTcomment{strucný popis obsahu CD}.
-		.1 exe\DTcomment{adresár se spustitelnou formou implementace}.
+		.1 readme.txt\DTcomment{stručný popis obsahu CD}.
 		.1 src.
 		.2 impl\DTcomment{zdrojové kódy implementace}.
 		.2 thesis\DTcomment{zdrojová forma práce ve formátu \LaTeX{}}.
+		.1 test\DTcomment{soubory spojené s testováním}.
 		.1 text\DTcomment{text práce}.
 		.2 thesis.pdf\DTcomment{text práce ve formátu PDF}.
-		.2 thesis.ps\DTcomment{text práce ve formátu PS}.
 	}
 \end{figure}
 
