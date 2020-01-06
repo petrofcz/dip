@@ -342,8 +342,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\begin{itemize}
 			\item \textbf{Snímek všech parametrů} - V této strategii bude možné pořídit snímek hodnot všech parametrů VST pluginu. Snímek bude načten při načtení presetu.
 			\item \textbf{Zpráva typu Program Change} - Tato strategie zajistí odeslání MIDI zprávy typu Program Change do patřičného VST pluginu.
-			\item \textbf{Načtení nativního VST presetu} - Za použití této strategie dojde k načtení nativního presetu VST pluginu. Nativní presety je možné editovat
-			v hostitelské aplikaci či přímo v pluginu.
+			\item \textbf{Načtení interního VST presetu} - Při použití této strategie dojde k načtení interního presetu pluginu definovaného VST protokolem. Interní presety pluginu je možné editovat v hostitelské aplikaci či přímo v pluginu.
 		\end{itemize}
 		Pro každou vrstvu může být aktivní právě jeden preset. Po načtení presetu bude 
 		pro danou vrstvu aplikovaná inicizalizační strategie na virtuální nástroj a budou načteny rozdílové sady hodnot parametrů nástroje a efektů.
@@ -969,7 +968,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			
 			Ke změně stavu navigace uživatelem slouží vertikální menu definované globálně v rámci hlavní komponenty \texttt{AppComponent} z modulu \texttt{AppModule}. Pro vykreslené menu je použita komponenta \texttt{MatSidenav} z frameworku Angular Material.
 			
-			Navigace v rámci uživatelského rozhraní harwdarového kontroleru je do značné míry nezávislá na stavu navigace desktopového uživatelského rozhraní aplikace.
+			Navigace v rámci uživatelského rozhraní hardwdarového kontroleru je do značné míry nezávislá na stavu navigace desktopového uživatelského rozhraní aplikace.
 			Výjimkou je případ editace některých částí konfigurace projektu, kdy v rámci uživatelského rozhraní hardwarového kontroleru dochází k nastavení stavu navigace a odepření možnosti jeho změny.
 			
 		\subsection{HomeModule}
@@ -1125,22 +1124,32 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Pro uživatele může být těžké se v aplikaci zorientovat, jelikož aplikace neposkytuje žádné nápovědy ani legendy. V případě hardwarového kontroleru není zahrnuta žádná nápověda. 
 			Pro lepší orientaci uživatele by mohla být aplikace doplněna o použití tzv. tooltip prvků, kdy je nápověda zobrazena při umístení kurzoru nad ovládací prvek.
 			Vhodné by bylo také poskytnout uživatelskou příručku, případně audiovizuálního průvodce.
+			
+		\subsection{Zhodnocení}
+			Mezi problémy, se kterými by se mohl uživatel setkat, patří horší orientace v prostředí hardwarového kontroleru způsobená
+			 absencí jasné indikace stavu systému a funkce ovládacích prvků. Uživatel si pravděpodobně bude muset zapamataovat funkce jednotlivých ovládacích prvků na globální úrovni i na úrovni jednotlivých obrazovek, jelikož účel ovládacích prvků nelze ze zobrazených údajů jasně odhadnout.
+			Zároveň není k dispozici náhled na globální stav systému, uživatel vždy vidí jen část stavu (např. na základě aktuálně zvolené vrstvy), což pro něj může být matoucí.
+			U desktopové aplikace se může uživatel ztratit kvůli absenci nápovědy.
 		
 	\section{Uživatelské testování}
+		Každý uživatel byl nejprve seznámen se systémem. Následně byl požádán o provedení testovacího scénáře. Reakce uživatele byly zaznamenány pomocí programu pro snímání obsahu obrazovky a video záznamu. Zaznamenané chování uživatele v rámci testovacího scénáře bylo následně podrobeno analýze.
+	
 		\subsection{Testovací scénář}
 			Pro účely testování byl použitý následující testovací scénář.
-			
+			\bigbreak
+			\noindent 
 			V desktopové aplikaci proveďte následující úkony:
 			\begin{enumerate}
-				\item Načtěte projekt programu Bidule
+				\item Načtěte projekt programu Bidule.
 				\item Založte novou stránku mapování parametrů pro některý z virtuálních nástrojů.
-				\item Vytvořte vlastní kategorii presetu a nový preset. Použijte vytvořenou stránku mapování parametrů z předchozího kroku.
+				\item Vytvořte vlastní kategorii presetu a nový preset. Použijte stránku mapování parametrů vytvořenou v předchozím kroku.
 			\end{enumerate}
 				
+			\noindent
 			Poté prostřednictvím hardwarového kontroleru proveďte následující kroky:
 			\begin{enumerate}
 				\item Zvolte nově vytvořený preset.
-				\item Změňte hodnotu parametru virtuálního nástroje.
+				\item Změňte hodnotu některého parametru virtuálního nástroje.
 				\item Přepněte na druhou vrstvu a vyberte jiný preset.
 				\item Změňte jakýkoliv parametr některého z globálních efektů.
 				\item Na první vrstvě přepněte na libovolný preset.
@@ -1149,18 +1158,138 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\end{enumerate}
 		
 		\subsection{Uživatel č. 1}
+			Prvním testovaným uživatelem byl muž, 28 let, zabývající se hrou na klávesy a kytaru převážně v zábabové kapele.
+			Uživatel neměl předchozí zkušenosti s použitím virtuálních hudebních nástrojů, měl však zkušenosti s použitím hardwarových nástrojů.
+
+			\subsubsection{Průběh testování}
+			
+			\noindent
+			První část scénáře - desktopová aplikace.
+			\begin{enumerate}
+				\item Uživatel neměl problémy s výběrem a načtením uloženého projektu programu Bidule.
+				\item Při editaci stránek mapování parametrů virtuálního nástroje měl problém uživatel s orientací a snažil se nejprve vybrat již existující stránku mapování. Po vybrání ovládaného parametru uživatel zapomněl určit strategii pro mapování parametru. 
+				\item Uživatel měl problém s navigací. Z popisu kroku testovacího scénáře byl zmatený a nevěděl, co má dělat. Při výběru kategorie omylem klikl na tlačítko pro editaci názvu kategorie. Po vytvoření presetu byl zmatený, jelikož tlačítko pro editaci presetu nebylo aktivní.
+			\end{enumerate}
+		
+			\noindent
+			Druhá část scénáře - hardwarový kontroler.
+			\begin{enumerate}
+				\item Uživatel správně zvolil nově vytvořený preset.
+				\item Uživatel přepnul zobrazení na správnou obrazovku, ale zvolil jiný preset z historie. To bylo pro něj matoucí a nevěděl, jak se vrátit do předchozího stavu. Volbu požadovaného nástroje vyřešil rychle postupem z předchozího kroku.
+				Poté již uživatel nevěděl, kde nastavení najde a přepl na obrazovku pro ovládání vstupních efektů vrstvy, o které se domníval, že slouží k ovládání globálních efektů. Rychle si však chybu uvědomil, přepl znovu na správnou obrazovku a v pořádku změnil hodnotu parametru virtuálního nástroje.
+				\item Dvojklik provedený uživatelem byl moc pomalý. Při druhém pokusu již došlo k přepnutí na správnou vrstvu.
+				Volba presetu proběhla bez problémů. Uživatel též ovládal hlasitosti vrstev, kde pro něj bylo matoucí použití statických knobů.
+				\item Uživatel si spltel pojmy globální efekt a efekt pro vrstvu. Místo globálního efektu nastavil hodnotu lokálního efektu. Jelikož v té době byl preset na první vrstvě zeslabený, nevyjádřil údiv.
+				\item Uživatel správně provedl přepnutí presetu.
+				\item Při volbě vrstvy nejprve uživatel provedl dvojklik opět moc pomalu. Změna parametru nástroje proběhla bez problému.
+				\item U posledního kroku uživatel zapomněl zvolit ovládanou vrstvu. Navíc zvolil obrazovku pro výběr presetů namísto obrazovky ovládání parametrů nástroje, ve které je zahrnuta historie presetů. Svji chybu si rychle uvědomil a napravil, byl ale zmatený, jelikož ovládaná vrstva byla zeslabená a tak se zdálo, že se akce nijak neprojevila.
+			\end{enumerate}
+		
+			\subsubsection{Zpětná vazba uživatele}
+				Uživatel uvedl následující seznam připomínek k uživatelskému prostředí hardwarového kontroleru.
+				\begin{itemize}
+					\item Příliš krátký čas pro rozlišení vícenásobného stisknutí tlačítek.
+					\item Položky v historii presetů by se neměly měnit a měly by odpovídat kategoriím dle uspořádání na obrazovce přepínání presetů.
+					\item V rámci volby presetů by mělo dojít ke změně aktivního presetu již při výběru kategorie. Toto chování je standardní u nástrojů od společnosti Roland.
+					\item Není k dispozici jednotné zobrazení aktuálních presetů pro všechny vrstvy manuálů.
+					\item Chování tlačítek není zřejmé, není snadné si ho zapamatovat.
+				\end{itemize}
+			
+			\subsubsection{Zhodnocení}
+				Jak již uživatel poznamenal v rámci zpětné vazby, ovládací prvky prostředí hardwarového kontroleru postrádají nápovědu a bylo pro něj velmi těžké si zapamatovat jejich funkci. Uživatel byl často zmatený a nevěděl, jakým způsobem lze zvolit požadovanou obrazovku. Též indikace aktuálního stavu systému byla pro uživatele nedostatečná. Indikace je sice přítomná, ale pro uživatele je těžké si zapamatovat, jakou informaci vyjadřuje.
+				
+				Zároveň pro uživatele bylo problematické vícenásobné stisknutí tlačítek, jelikož je nedokázal opakovaně stisknout s dostatečnou rychlostí.
+				
+				Uživatel byl též prvotně zmatený návrhem přepínání presetů, které je odlišné od nástroje, na který je zvyklý.
+				
+				U desktopové aplikace měl uživatel problémy s navigací a pochopením architektury systému. Tyto problémy můžou být způsobeny absencí zkušeností s virutálními hudebními nástroji a neznalostí terminologie.
+				
+				Uživatel si též nebyl jistý kroky netriviálních procesů.
+
 		\subsection{Uživatel č. 2}
-		\subsection{Uživatel č. 3}
+			Druhým testovaným uživatelem byl muž, 22 let, zabývající se hrou na klávesy a kytaru v autorských projektech. Uživatel měl bohaté zkušenosti s využitím virtuálních hudebních nástrojů, avšak pouze v prostředí pro studiovou produkci hudby (DAW).
+			Zároveň byl uživatel zkušený i v oblasti hardwarových hudebních nástrojů.
+			
+			\subsubsection{Průběh testování}
+	
+				\noindent
+				První část scénáře - desktopová aplikace.
+				\begin{enumerate}
+					\item Krok načtení projektu programu Bidule provedl uživatel bez problému.
+					
+					\item Na obrazovce pro editaci stránek mapování parametrů virtuálního nástroje se uživatel ihned snažil vybrat již existující stránku mapování. Po vytvoření nové stránky uživatel zapomněl zadat další informace. Při zadávání dalších informací uživatel nevěděl, jak lze nakonfigurovat mapování pro nově vytvořenou položku a měl celkově problémy s orientací v rámci procesu definice vlastního  mapování parametrů.	U použití funkce pro výběr ovládaného parametru uživatel předpokládal, že lze vytvořit více položek stránky mapování postupným ovládáním různých parametrů v uživatelském prostředí virtuálního nástroje.
+					
+					\item Při vytváření presetu uživatel nejprve načetl obrazovku z předchozího kroku. Brzy zvolil správnou položku menu a vytvořil nový preset. Uživatel byl zmatený kvůli neaktivnímu tlačítku pro editaci presetu. Konfigurace presetu dále již proběhla bez problému.
+				\end{enumerate}
+				
+				\noindent
+				Druhá část scénáře - hardwarový kontroler.
+				\begin{enumerate}
+					\item Uživatel správně zvolil kategorii, ale byl zmatený ořezáním příliš dlouhého názvu presetu. Nevhodný znak šipky indikující ořezání navíc u uživatele vytvořil mylný dojem, že lze seznam posunout. Uživatel měl navíc problém s oddělením ovládání kategorií a presetů.
+					\item V druhém kroku měl uživatel problém s přepnutím na požadovanou obrazovku, jelikož si způsob ovládání pamatoval pouze matně. Se změnou hodnoty parametru nástroje pak neměl problém. 
+					\item Uživatel si vybavil způsob ovládání aktuální vrstvy, ale měl problém s přepnutím na obrazovku pro volbu presetu. Samotná volba presetu pak již proběhla v pořádku.
+					\item Uživatel si ihned vybavil způsob přepnutí na obrazovku efektů. Měl však problém s vícenásobným kliknutím, které nebylo provedeno s dostatečnou rychlostí.
+					\item S přepnutím presetu na první vrstvě neměl uživatel problémy.
+					\item Uživatel postupoval nejistě ve strachu, že způsobí neočekávanou změnu. Nakonec však krok změny parametru nástroje provedl správně.
+					\item Uživatel měl problémy s využitím historie použitých presetů. Nepamatoval si, jak funkce funguje, a krok nedokončil.
+				\end{enumerate}
+			
+			\subsubsection{Zpětná vazba uživatele}
+				Pro uživatele by byla podstatným zlepšením možnost zadávat položky mapování parametrů virtuálních nástrojů v uživatelském rozhraní pluginu najednou.
+			
+			\subsubsection{Zhodnocení}
+				Při ovládání systému za pomoci hardwarového kontroleru uživatel často nevěděl, jak zajistí přepnutí na požadovanou obrazovku. Také měl problémy s vícenásobným stisknutím tlačítek, které občas stiskl příliš pomalu. V průběhu testu se jeho orientace v ovládacích prvcích zlepšovala. V závěru testování byl však zmatený a nebyl schopný určit celkový stav systému.
+				
+				V uživatelském prostředí desktopové aplikace byl uživatel při složitějších procesech dezorientovaný a nevěděl, jaké kroky je třeba provést a jak docílit provedení požadovaných úkonů.
+			
+	\section{Výsledky testování}
+		Uživatelské testování potvrdilo problémy zjištěné v rámci heuristické analýzy a ukázalo na další podstatné problémy.
+		
+		V následujících podkapitolách jsou rozebrány jednotlivé problémy a je navrženo řešení pro jejich eliminaci.
+		
+		\subsection{Uživatelské rozhraní HW kontroleru}
+			\subsubsection{Vícenásobné stisknutí tlačítek}
+				Uživatelé měli často problém s vícenásobným stisknutím tlačítek, jelikož bylo třeba tlačítko opakovaně stisknout s vysokou frekvencí.
+				Uživatel opakoval stisknutí moc pomalu a tak aplikace vyhodnotila vstup jako jednoduché stisknutí tlačítka.
+				
+				Problém lze vyřešit triviálně nastavením delšího časového okénka při zpracovávání stisknutí tlačítek.
+				
+			\subsubsection{Omezená indikace stavu}
+				V rámci provádění testovacího scénáře měli uživatelé často problém se určením stavu systému. Stav je v omezené míře indikován, uživatel však neví, jaký mají informace význam. Tento problém byl zjištěn již při heuristické analýze, je však způsobený krátkou dobou používání systému a lze tak předpokládat, že při intenzivnějším používání systému problém přestane být aktuální.
+				
+				Chybí však možnost hromadného zobrazení aktuálních presetů pro všechny vrstvy a další souhrnná zobrazení celého stavu systému.
+				
+				Úpravou pro lepší orientaci uživatele by mohlo být zavedení obrazovky pro zobrazení souhrnných informací.
+				
+			\subsection{Určení funkce ovládacích prvků}
+				Podobně jako u problému omezené indikace stavu způsobeného absencí popisu zobrazované informace, dochází k problému i u určení účelu ovládacích prvků.
+				
+				Jednoduchým řešení je doplnění nápovědy přímo na povrch hardwarového kontroleru.
+			
+			\subsection{Nevhodný znak pro indikaci ořezání názvů}
+				Na displeji kontroleru lze použít pouze omezenou sadu znaků. Znak vlnovky, který je použitý pro indikaci ořezání názvu, kontroler neumí zobrazit. 
+				
+				Řešením je použití jiného znaku vhodného pro indikaci ořezání názvu, který bude možné zobrazit na displeji hardwarového kontroleru.
+				
+			\subsection{Konzistence přepínání presetů}
+				Problém nastává při přepínání presetů. Uživatel je zmatený, jelikož může preset vybrat buď z obrazovky přepínání presetů, nebo z obrazovky ovládání parametrů v rámci načítání záznamů historie.
+				
+				Jelikož systém cílí na dlouhodobé uživatele a počítá s křivkou učení, bylo toto chování navrženo záměrně. V praxi přinese velkou výhodu možnost rychlého přepínání presetů přímo ze stránky ovládání parametrů nástroje.
+				
+				Zároveň pro uživatele může být matoucí způsob výběru presetu z kategorie, kdy k přepnutí zvuku dojde až při volbě daného presetu a ne po volbě kategorie, jak je tomu např. u některých nástrojů společnosti Roland. Toto chování bylo též navrženo záměrně, neboť dává uživateli větší svobodu při procházení presetů.
+			
+		\subsection{Uživatelské rozhraní desktopové aplikace}
+			\subsubsection{}
 \begin{conclusion}
 	Cílem této práce bylo vytvoření prostředí pro živou hudební produkci za použití virtuálních hudebních nástrojů.
 	
 	Nejprve byla provedena analýza požadavků a průzkum existujících řešení. Na základě analýzy bylo navrženo
-	vlastní řešení kombinující počítač a připojený kontroler s prezentačními prvky. Aplikace podle návrhu propojuje hardwarový kontroler a tzv. VST host prostředí, které zajišťuje provoz virtuálních nástrojů a zpracování zvukového signálu. V rámci analýzy byly též provedeny testy kompatibility jednotlivých komponent. Ve fázi návrhu byl také vytvořen doménový model aplikace a drátěné modely uživatelského rozhraní desktopové aplikace a hardwarového kontroleru.
+	vlastní řešení kombinující počítač a připojený kontroler s prezentačními prvky. Aplikace podle návrhu integruje hardwarový kontroler a tzv. VST host prostředí, které zajišťuje provoz virtuálních nástrojů a zpracování zvukového signálu. V rámci analýzy byly též provedeny testy kompatibility jednotlivých komponent. Ve fázi návrhu byl mimo jiné vytvořen doménový model aplikace a drátěné modely uživatelského rozhraní desktopové aplikace a hardwarového kontroleru.
 	
-	V rámci implementace bylo ve velké míře využito reaktivní programování. Vznikla vrstva pro nízkoúrovňovou komunikaci s USB MIDI zařizeními a komunikaci přes protokol Automap vč. ovladače uživatelského rozhraní hardwarového kontroleru.
+	V rámci implementace bylo ve velké míře využito reaktivní programování. Vznikla vrstva pro nízkoúrovňovou komunikaci s USB MIDI zařizeními a komunikaci přes protokol Automap včetně modelu uživatelského rozhraní hardwarového kontroleru.
 	Testování výsledné aplikace probíhalo pouze na úrovni uživatelských testů za účasti vybraných hudebníků.
 	
-	Výsledná aplikace splňuje požadované vlastnosti a celé prostředí lze použít v praxi pro živá hudební vystoupení. Aplikace by dále mohla být rozšířena o pokročilejší funkce užitečné při vystoupení hudebníka. Zároveň by bylo vhodné doplnit uživatelské rozhraní desktopové aplikace o nápovědu.
+	Výsledná aplikace splňuje požadované vlastnosti a celé prostředí lze použít v praxi pro živá hudební vystoupení. Aplikace by dále mohla být rozšířena o pokročilejší funkce užitečné při živých vystoupeních hudebníků. Zároveň by bylo vhodné doplnit desktopové uživatelské rozhraní aplikace o nápovědu.
 	
 	
 \end{conclusion}
