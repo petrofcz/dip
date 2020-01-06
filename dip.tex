@@ -1077,7 +1077,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Při načítání projektu programu Bidule je zobrazen tzv. spinner,	který značí, že se projekt stále načítá.
 			Je-li právě otevřený nějaký projekt, v hlavní liště je též zobrazena aktuální vrstva a manuál. 
 			V rámci uživatelského rozhraní jednotlivých obrazovek je též indikován aktuální stav systému. U tzv. learn funkce je např. indikována aktuální hodnota parametru a je možné naslouchání novým hodnotám zastavit. V seznamu presetů je zvýrazněn aktuální preset.
-			Kritérium viditelnosti systému desktopové uživatelské rozhraní splňuje.
+			Kritérium viditelnosti stavu systému desktopové uživatelské rozhraní splňuje.
 			
 			U hardwarového kontroleru je zobrazena volba aktuální obrazovky s pomocí LED podsvícení tlačítek, uživatel však nevidí textové vyjádření aktuální obrazovky. Aktuální manuál a vrstva jsou indikovány LED podsvícením u tlačítek představujících jednotlivé manuály. U jednotlivých obrazovek je též indikován aktuální stav pokud je to možné. Stav aplikace je převážně vyjádřen na LED prstencích umístěných okolo otočných enkodérů a LED podsvícením tlačítek.			
 		\subsection{Match between system and the real world - Shoda mezi systémem a reálným světem}\label{sec:heuristics-2}
@@ -1279,7 +1279,20 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				Zároveň pro uživatele může být matoucí způsob výběru presetu z kategorie, kdy k přepnutí zvuku dojde až při volbě daného presetu a ne po volbě kategorie, jak je tomu např. u některých nástrojů společnosti Roland. Toto chování bylo též navrženo záměrně, neboť dává uživateli větší svobodu při procházení presetů.
 			
 		\subsection{Uživatelské rozhraní desktopové aplikace}
-			\subsubsection{}
+			\subsubsection{Nedostatečná nápověda}
+				Jelikož není dostupná žádná nápověda, uživatel má často problém s určením příčiny nedostupnosti ovládacích prvků, nebo jejich účelu.
+				
+				Řešením je doplnění vhodného popisu a nápovědy k ovládacím prvkům, případně zobrazení důvodu nedostupnosti některých prvků.
+			
+			\subsubsection{Nízká úroveň dekompozice rozhraní}
+				V rámci jedné obrazovky lze provést i složitější procesy. Uživateli dělá problém se zorientovat v postupu složitějších procesů, jako je např. založení nové stránky mapování parametrů pluginu. Uživatel snadno vynechá některé kroky procesu, nebo je pro něj těžké určit, v jaké části obrazovky může akci provést.
+				
+				Řešením je dekompozice uživatelského rozhraní na menší části, které lze orchestrovat např. pomocí průvodce, či přepínatelných záložek.
+
+			\subsubsection{Způsob zadávání položek stránky mapování parametrů}
+				Implementovaný způsob zadávání položek stránek mapování parametů pluginů je sice funkční, ale mohl by být efektivnější. 
+				Řešením je implementace možnosti určení ovládaných parametrů hromadně přímo v uživatelském prostředí pluginu.
+
 \begin{conclusion}
 	Cílem této práce bylo vytvoření prostředí pro živou hudební produkci za použití virtuálních hudebních nástrojů.
 	
@@ -1287,11 +1300,9 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	vlastní řešení kombinující počítač a připojený kontroler s prezentačními prvky. Aplikace podle návrhu integruje hardwarový kontroler a tzv. VST host prostředí, které zajišťuje provoz virtuálních nástrojů a zpracování zvukového signálu. V rámci analýzy byly též provedeny testy kompatibility jednotlivých komponent. Ve fázi návrhu byl mimo jiné vytvořen doménový model aplikace a drátěné modely uživatelského rozhraní desktopové aplikace a hardwarového kontroleru.
 	
 	V rámci implementace bylo ve velké míře využito reaktivní programování. Vznikla vrstva pro nízkoúrovňovou komunikaci s USB MIDI zařizeními a komunikaci přes protokol Automap včetně modelu uživatelského rozhraní hardwarového kontroleru.
-	Testování výsledné aplikace probíhalo pouze na úrovni uživatelských testů za účasti vybraných hudebníků.
+	Testování výsledné aplikace probíhalo pouze na úrovni uživatelských testů za účasti vybraných hudebníků. Při testování byly nalezeny problémy, které byly analyzovány a případně bylo navrženo řešení pro jejich eliminaci.
 	
 	Výsledná aplikace splňuje požadované vlastnosti a celé prostředí lze použít v praxi pro živá hudební vystoupení. Aplikace by dále mohla být rozšířena o pokročilejší funkce užitečné při živých vystoupeních hudebníků. Zároveň by bylo vhodné doplnit desktopové uživatelské rozhraní aplikace o nápovědu.
-	
-	
 \end{conclusion}
 
 \bibliographystyle{csn690}
