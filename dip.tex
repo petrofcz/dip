@@ -46,7 +46,7 @@
 \supervisor{Ing. Josef Pavlíček, Ph.D.}
 \acknowledgements{Děkuji vedoucímu této práce Ing. Josefovi Pavlíčkovi, Ph.D. a hudebníkům, kteří  se zůčastnili uživatelského testování výsledné aplikace.}
 % TODO
-\abstractCS{Cílem této práce bylo vytvořit prostředí pro živou hudební produkci, které by vyžívalo virtuálních hudebních nástrojů a zároveň přinášelo výhody čistě hardwarových hudebních nástrojů. Byla provedena rešerše existujících řešení a následně navržen systém s využitím počítače a připojené MIDI klaviatury s prezentačními prvky. Součástí práce je i implementace navrženého řešení, která byla otestována na úrovni uživatelských testů.}
+\abstractCS{Cílem této práce bylo vytvořit prostředí pro živou hudební produkci, které by využívalo virtuálních hudebních nástrojů a zároveň přinášelo výhody čistě hardwarových hudebních nástrojů. Byla provedena rešerše existujících řešení a následně navržen systém s využitím počítače a připojené MIDI klaviatury s prezentačními prvky. Součástí práce je i implementace navrženého řešení, která byla otestována na úrovni uživatelských testů.}
 \abstractEN{The main objective of this thesis is to develop a platform suitable for live music performance combining usage of virtual music instruments and advantages of standalone electronic instruments. After research of possible solutions was made, custom system using computer and external MIDI controller with presentation elements was designed. The system was implemented for real-world usage and evaluated within user testing process.}
 \placeForDeclarationOfAuthenticity{V~Praze}
 \declarationOfAuthenticityOption{4} %volba Prohlášení (císlo 1-6)
@@ -253,9 +253,9 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		se ukázalo, že formát přenášených dat přesto odpovídá třídě USB pro MIDI zařízení\cite{usbmidi}.
 		
 		\subsection{VST host}
-		Jako hostitelská aplikace pro VST pluginy byl testován program Bidule of společnosti Plogue.
+		Jako hostitelská aplikace pro VST pluginy byl testován program Bidule od společnosti Plogue.
 		Z anlýzy vyplynulo, že poskytuje bohaté možnosti ovládání přes kombinaci protokolů OSC a UDP.
-		Program přes OSC umožňuje spouštět důležité akce, lze navíc přijímat a odesílat hodnoty všech VST pluginů a interních modulů.
+		Program přes OSC umožňuje spouštět důležité akce, lze navíc přijímat a odesílat hodnoty všech parametrů VST pluginů a interních modulů.
 		Data jsou uložena ve formátu XML, ze kterého lze snadno získat veškeré informace o uloženém projektu.
 		
 	\section{Zvolené technologie}
@@ -445,7 +445,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\begin{figure}
 			\centering
 			\includegraphics[width=1\textwidth]{DesktopUI-InstrumentAvailability}
-			\caption{Drátěný model obrazovky \texttt{D4} (zobrazení dostupnosti) nástroje}\label{fig:DesktopUI-InstrumentAvailability}
+			\caption{Drátěný model obrazovky \texttt{D4} (zobrazení dostupnosti nástroje)}\label{fig:DesktopUI-InstrumentAvailability}
 		\end{figure}
 		\begin{figure}
 			\centering
@@ -517,11 +517,11 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			tlačítka bude zobrazeno ovládání výstupních efektů pro danou vrstvu.
 			Při trojitém stisknutí se dvojice tlačítek chová podobně jako v případě dvojitého stisknutí,
 			k ovládání efektů ale nedochází na aktivní vrstvě, ale na globální úrovni.
-			Volba aktivní obrazovky je indikována pomocí LED prvku příslušného tlačítka. V případě obrazovek,
+			Volba aktivní obrazovky je indikována pomocí LED podsvícení příslušného tlačítka. V případě obrazovek,
 			které lze aktivovat vícenásobným stisknutím tlačítka je stav indikován rychlostí blikání LED prvku.			
 		
 			Pro výběr aktuálního manuálu a vrstvy byla zvolena vertikální řada tlačítek pod dvojicí tlačítek sloužicích k hlavní navigaci.
-			Tlačítka představují jednotlivé manuály. Stisknutím tlačítka dojde přepnutí na vrstvu manuálu určené podle počtu stisknutí.
+			Tlačítka představují jednotlivé manuály. Stisknutím tlačítka dojde k přepnutí na vrstvu manuálu určenou podle počtu stisknutí.
 			Aktuální manuál je indikován LED prvkem příslušného tlačítka. Rychlost blikání indikuje pořadí zvolené vrstvy, přičemž
 			konstantní rozsvícení LED značí volbu první vrstvy.
 		\subsection{Procházení presetů (obrazovka C1)}\label{sec:C1}
@@ -563,7 +563,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			že je se jedná o hlavní parametr pro daný efekt.
 			
 			Na druhém řádku displeje je zobrazen seznam dostupných efektů pro danou vrstvu a umístění. Při stisknutí tlačítka
-			z druhé řady je načtena obrazovka ovládání všech parametrů příslušného efektu (viz. kapitolu \ref{sec:C4}).
+			z druhé řady je načtena obrazovka ovládání všech parametrů příslušného efektu (viz kapitolu \ref{sec:C4}).
 		
 		\subsection{Ovládání parametrů efektu (obrazovka C4)}\label{sec:C4}
 			Na této obrazovce je k dispozici ovládání parametrů efektu (viz diagram \ref{fig:ControllerUI-EffectDetail}).
@@ -592,7 +592,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		Třída \texttt{MidiAdapter} tak poskytuje částečnou implementaci tohoto protokolu. 
 		Obsahuje metodu pro odeslání zprávy a možnost naslouchat příchozím zprávám za použití třídy \texttt{Observable} z knihovny RxJS.		
-		Třída využívá funkcí třídy \texttt{USBDriver}, jejíž instance je v konstruktora předána s pomocí techniky dependency injection\cite{prasanna2009dependency}.
+		Třída využívá funkcí třídy \texttt{USBDriver}, jejíž instance je v konstruktoru předána s pomocí techniky dependency injection\cite{prasanna2009dependency}.
 		
 		Třída \texttt{USBDriver} poskytuje jednoduché rozhraní pro komunikaci s připojeným USB zařízením.
 		Umožňuje odesílat data a poskytuje možnost naslouchání údalostem typu příjem dat, připojení a odpojení zařízení podobně jako třída \texttt{MidiAdapter}.
@@ -654,7 +654,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		
 		\subsection{VSTState}
 			V tomto stavu jsou obsaženy informace o dostupných VST pluginech. Stav je uložen 
-			pro každý projekt zvlášť (viz. kapitolu TODO) a je sdílený klientskou i serverovou částí aplikace.
+			pro každý projekt zvlášť (viz kapitolu \ref{sec:data-layer}) a je sdílený klientskou i serverovou částí aplikace.
 			Model používá z API pro CRUD operace pouze funkce pro přidání a aktualizaci.
 			Pro získávání entit představujících virtuální nástroje a efekty jsou přítomné příslušné metody.
 			Zároveň je zde implementována obsluha akcí pro správu stránek mapování parametrů
@@ -662,9 +662,8 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 					
 		\subsection{ManualState}
 			Tento stav obsahuje informace o manuálech a vrstvách dostupných v otevřeném projektu a je sdílený klientskou i serverovou částí aplikace. Není ukládán do perzistentního úložiště.
-			Model používá z API pro CRUD operace pouze funkce pro přidání, jelikož k načtené stavu
-			dochází pouze při otevření projektu. Obahuje informaci o aktuálně zvolené vrstvě, model obsahuje metodu
-			pro získání aktuálně zvoleného manuálu.
+			Model používá z API pro CRUD operace pouze funkce pro přidání, jelikož k načtení stavu
+			dochází pouze při otevření projektu. Obsahuje metody pro získání aktuálně zvolené vrstvy a manuálu.
 		
 		\subsection{SessionState}
 			V tomto stavu jsou uloženy informace o aktuálním sezení. Stav je sdílený klientskou i serverovou částí aplikace a není ukládán do perzistentního úložiště.
@@ -683,7 +682,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		\subsection{PresetCategoryState}
 			Tento stav obsahuje uložené kategorie presetů. Je sdílen klientskou a serverovou částí aplikace
 			a jeho obsah je ukládán do perzistentního úložiště pro každý projekt zvlášť.
-			Používá API pro CRUD operace obsahuje. Dále poskytuje logiku vyřizování CRUD operací samotných presetů
+			Používá API pro CRUD operace. Dále poskytuje logiku vyřizování CRUD operací samotných presetů
 			z pohledu kategorie. Lze tak presety v rámci kategorie řadit, přidávat, duplikovat, či odebírat.
 			
 		\subsection{PresetState}
@@ -756,9 +755,9 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 		mezi které patří např. zprávy typu panic, které zajistí přerušení všech znějících tónů.
 	
 	\section{Automap a hardwarový kontroler}\label{sec:automap-hw-controller}
-		Pro podporu komunikace s hardwarovým kontrolerem přes protokol Automap byla vytvřena speciální vrstva.
+		Pro podporu komunikace s hardwarovým kontrolerem přes protokol Automap byla vytvořena speciální vrstva.
 		V budoucnu je možno tuto vrstvu nahradit jinými implementacemi pro podporu dalších ovládacích zařízení.
-		Vrstva vužívá třídu \texttt{MidiAdapter} pro přenos zpráv podle protokolu Automap.
+		Vrstva využívá třídu \texttt{MidiAdapter} pro přenos zpráv podle protokolu Automap.
 		V následujících podkapitolách jsou popsány jednotlivé části této vrstvy, která zajišťuje
 		vstupně-výstupní operace s připojeným hardwarovým kontrolerem. 
 
@@ -856,7 +855,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			\subsubsection{ParamMappingContoller}
 				Tato komponenta ovládá pouze jeden řádek oblasti displeje a měla by být tedy použita v rámci komponenty obsluhující celou obrazovku.
 				Je využitá v třídách \texttt{Instrument\-Detail\-Controller}, \texttt{Effect\-Overview\-Controller} a \texttt{Effect\-Detail\-Controller} implementující obrazovky C2 - C4 (viz kapitoly \ref{sec:C2}, \ref{sec:C3}, \ref{sec:C4}). Zajišťuje chování pro ovládání a indikaci parametrů VST pluginů. Aktuálně ovládané parametry a jejich mapování načítá ze stavu \texttt{Param\-Mapping\-Page\-State}.
-				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstencích obklopující otočné enkodéry a indikuje hodnotu na LED prstenci podle strategie mapování. Též
+				U otočných enkodérů nastavuje mód zobrazení hodnoty na LED prstenci a indikuje samotnou hodnotu podle zvolené strategie mapování. Též
 				reaguje na události otočného enkodéru. Při jeho otočení podle strategie mapování vyvolá akci aktualizace hodnoty parametru VST pluginu.
 				Zobrazení na displeji poskytuje standardně název ovládaného parametru, pokud však není nastavený příznak pro trvalé 
 				zobrazení hodnot.
@@ -881,7 +880,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				třídu \texttt{BehaviorSubject} z frameworku RxJS.			
 							
 			\subsubsection{InstrumentDetailController}
-				Tato třída vužívá v kombinaci tříd \texttt{Param\-Mapping\-Controller} a \texttt{Last\-Presets\-Controller} tak, aby bylo dosaženo kýženého chování (viz kapitolu \ref{sec:C2}).
+				Tato třída využívá v kombinaci tříd \texttt{Param\-Mapping\-Controller} a \texttt{Last\-Presets\-Controller} tak, aby bylo dosaženo kýženého chování (viz kapitolu \ref{sec:C2}).
 				Aktualizace stránky mapování parametrů nástroje je implementována ve třídě \texttt{Param\-Mapping\-Loader\-Service}.
 				
 			\subsubsection{EffectOverviewController}
@@ -927,7 +926,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	
 	\section{Desktopové uživatelské rozhraní}
 		Pro desktopové uživatelské rozhraní byl zvolen framework Angular Material, který přináší běžné prvky
-		uživatelského rozhraní pro jejich použití ve frameworku Angular. Aplikace vužívá prvky pro rozvržení
+		uživatelského rozhraní pro jejich použití ve frameworku Angular. Aplikace využívá prvky pro rozvržení
 		částí UI, formuláře, tlačítka, seznamy a další. Stav desktopového uživatelského rozhraní je do značné míry
 		nezávislý na stavu uživatelského rozhraní hardwarového kontroleru. Výjimky budou popsány v následujících podkapitolách, které 
 		popisují jednotlivé části desktopového uživatelského rozhraní.
@@ -966,7 +965,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Jednotlivé stavy navigace mohou být aktivovány pouze za určitých omezení, např. pokud je načtený projekt programu Bidule. 
 			Omezení jsou vyjádřena tzv. guardy, které představují např. třídy \texttt{NoLayoutGuard} a \texttt{LayoutGuard} z modulu \texttt{LayoutModule}.
 			
-			Ke změně stavu navigace uživatelem slouží vertikální menu definované globálně v rámci hlavní komponenty \texttt{AppComponent} z modulu \texttt{AppModule}. Pro vykreslené menu je použita komponenta \texttt{MatSidenav} z frameworku Angular Material.
+			Ke změně stavu navigace uživatelem slouží vertikální menu definované globálně v rámci hlavní komponenty \texttt{AppComponent} z modulu \texttt{AppModule}. Pro vykreslení menu je použita komponenta \texttt{MatSidenav} z frameworku Angular Material.
 			
 			Navigace v rámci uživatelského rozhraní hardwdarového kontroleru je do značné míry nezávislá na stavu navigace desktopového uživatelského rozhraní aplikace.
 			Výjimkou je případ editace některých částí konfigurace projektu, kdy v rámci uživatelského rozhraní hardwarového kontroleru dochází k nastavení stavu navigace a odepření možnosti jeho změny.
@@ -1042,7 +1041,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Při přidání nové inicializační strategie stačí implementovat komponentu, která bude obsahovat logiku pro aktualizaci stavu.
 			
 		
-	\section{Datová vrstva aplikace}
+	\section{Datová vrstva aplikace}\label{sec:data-layer}
 		Funkce datové vrstvy je z pohledu třívrstvé architektury částečně implementována díky knihovně NGXS pro správu stavu aplikace.
 		V následujících podkapitolách bude probrána perzistence dat.
 	
@@ -1063,7 +1062,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			Perzistence konfigurace aplikace pracuje se snímkem aktuálního stavu aplikace za pomoci knihovny NGXS.
 			Třída \texttt{State\-Persister\-Plugin} implementuje zásuvný modul pro knihovnu NGXS, který jednotlivé části stavu serializuje do formátu JSON a ukládá je do souborů. Perzistence probíhá na globální nebo lokální úrovni, kde je konfigurace uložena pro každý projekt zvlášť. Třída \texttt{State\-Loader\-Handler} zajišťuje načítání uložené konfigurace po inicializaci aplikace, nebo po načtení projektu.
 			
-			K uložení informací slouží vyvolání akce \texttt{Persist\-State\-Action}. K tomu dochází automaticky v daném časovém intervalu, nebo přes desktopového uživatelského rozhraní.
+			K uložení informací slouží vyvolání akce \texttt{Persist\-State\-Action}. K tomu dochází automaticky v daném časovém intervalu, nebo přes desktopové uživatelské rozhraní.
 
 
 \chapter{Testování}
@@ -1132,7 +1131,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 			U desktopové aplikace se může uživatel ztratit kvůli absenci nápovědy.
 		
 	\section{Uživatelské testování}
-		Každý uživatel byl nejprve seznámen se systémem. Následně byl požádán o provedení testovacího scénáře. Reakce uživatele byly zaznamenány pomocí programu pro snímání obsahu obrazovky a video záznamu. Zaznamenané chování uživatele v rámci testovacího scénáře bylo následně podrobeno analýze.
+		Každý uživatel byl nejprve seznámen se systémem. Následně byl požádán o provedení testovacího scénáře. Reakce uživatele byly zaznamenány pomocí programu pro snímání obsahu obrazovky a mobilního telefonu. Zaznamenané chování uživatele v rámci testovacího scénáře bylo následně podrobeno analýze.
 	
 		\subsection{Testovací scénář}
 			Pro účely testování byl použitý následující testovací scénář.
@@ -1261,17 +1260,17 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 				
 				Úpravou pro lepší orientaci uživatele by mohlo být zavedení obrazovky pro souhrnné zobrazení  informací.
 				
-			\subsection{Určení funkce ovládacích prvků}
+			\subsubsection{Určení funkce ovládacích prvků}
 				Podobně jako u problému omezené indikace stavu způsobeného absencí popisu zobrazované informace, dochází k problému i při určení účelu ovládacích prvků.
 				
 				Jednoduchým řešením je doplnění nápovědy přímo na povrch hardwarového kontroleru.
 			
-			\subsection{Nevhodný znak pro indikaci ořezání názvů}
+			\subsubsection{Nevhodný znak pro indikaci ořezání názvů}
 				Na displeji kontroleru lze použít pouze omezenou sadu znaků. Znak vlnovky, který je použitý pro indikaci ořezání názvu, kontroler neumí zobrazit. 
 				
 				Řešením je použití jiného znaku vhodného pro indikaci ořezání názvu, který bude možné zobrazit na displeji hardwarového kontroleru.
 				
-			\subsection{Konzistence přepínání presetů}
+			\subsubsection{Konzistence přepínání presetů}
 				Problém nastává při přepínání presetů. Uživatel je zmatený, jelikož může preset vybrat buď z obrazovky přepínání presetů, nebo z obrazovky ovládání parametrů načítáním záznamu historie.
 				
 				Jelikož systém cílí na dlouhodobé uživatele a počítá s křivkou učení, bylo toto chování navrženo záměrně. V praxi přinese velkou výhodu možnost rychlého přepínání presetů přímo ze stránky ovládání parametrů nástroje.
@@ -1326,7 +1325,7 @@ pro efektivní využití virtuálních hudebních nástrojů na pódiu.
 	\item[IPC] Inter process communication
 	\item[JSON] JavaScript Object Notation
 	\item[ASCII] American Standard Code for Information Interchange
-	\item[MVC] Model, view, controller
+	\item[MVC] Model, View, Controller
 \end{description}
 
 
